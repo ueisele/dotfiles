@@ -1,0 +1,15 @@
+export PAGER=less
+export EXITOR=nvim
+
+
+typeset -U PATH path
+if ! [[ \${PATH} =~ "\${HOME}/.local/bin" ]] && [ -d "\${HOME}/.local/bin" ]; then
+    export PATH="\${HOME}/.local/bin:\${PATH}"
+fi
+if ! [[ \${PATH} =~ "\${HOME}/bin" ]] && [ -d "\${HOME}/bin" ]; then
+    export PATH="\${HOME}/bin:\${PATH}"
+fi
+export DOTFILES_BIN_DIR=${DOTFILES_BIN_DIR}
+if ! [[ \${PATH} =~ "\${DOTFILES_BIN_DIR}" ]] && [ -d "\${DOTFILES_BIN_DIR}" ]; then
+    export PATH="\${DOTFILES_BIN_DIR}:\${PATH}"
+fi

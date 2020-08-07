@@ -1,0 +1,26 @@
+[user]
+  name = ${USER_NAME:-$(whoami)}
+  email = ${USER_EMAIL:-$(whoami)@$(hostname)}
+[color]
+  ui = true
+[core]
+  excludesfile = .gitignore-global
+  editor = nvim
+  autocrlf = input
+[pull]
+  rebase = true
+[commit]
+  gpgsign = false
+[merge]
+  tool = vscode
+  conflictstyle = diff3
+[mergetool "vscode"]
+  cmd = code --wait $MERGED
+  trustExitCode = true
+[diff]
+  tool = vscode
+[difftool "vscode"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+  trustExitCode = true
+[push]
+  default = simple
