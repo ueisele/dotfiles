@@ -2,6 +2,7 @@
 
 function fail () {
     local exitcode="${1:?'Missing exit code as first parameter!'}"
+    shift
     local msg="${@:?'Missing log level as first parameter!'}"
     log "ERROR" "${msg}"
     exit ${exitcode}
