@@ -64,12 +64,20 @@ function download () {
     fi
 
     local actual_tag="$(resolve_actual_tag ${tag})"
-    log "INFO" "Download artifact for arch '${arch_type}' and libc '${libc_type}' with tag '${actual_tag}' from URL ${download_url}" 
-    #wget "${download_url}"" -qO - | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/bat"
-    curl -sfL "${download_url}" | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/bat"
-    mv -f "${target}/bat" "${target}/bat-${actual_tag}"
-    ln -s "${target}/bat-${actual_tag}" "${target}/bat"
-    log "INFO" "Artifact has been downloaded to ${target}/bat"
+    local filename_short="bat"
+    local filename_full="${filename_short}-${actual_tag}"
+    if [ -f "${target}/${filename_full}" ]; then
+        log "Artifact ${target}/${filename_full} has already been downloaded."
+    else
+        log "INFO" "Download artifact for arch '${arch_type}' and libc '${libc_type}' with tag '${actual_tag}' from URL ${download_url}" 
+        #wget "${download_url}"" -qO - | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/bat"
+        curl -sfL "${download_url}" | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/${filename_short}"
+        mv -f "${target}/${filename_short}" "${target}/${filename_full}"
+        log "INFO" "Artifact has been downloaded to ${target}/${filename_full}"
+    fi
+
+    ln -sf "${target}/${filename_full}" "${target}/${filename_short}"
+    log "INFO" "Created symlink from ${target}/${filename_full} to ${target}/${filename_short}"
 }
 
 if [ "${BASH_SOURCE[0]}" == "$0" ]; then
