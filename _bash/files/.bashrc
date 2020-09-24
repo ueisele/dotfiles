@@ -1,24 +1,15 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 # If not running interactively, don't do anything
-case \$- in
+case $- in
     *i*) ;;
       *) return;;
 esac
 
-######################################
-# Content of original ~/.bashrc file #
-######################################
-$(
-    if [ -f ~/.bashrc ] && ! [ -h ~/.bashrc ]; then
-        cat ~/.bashrc
-    fi 
-)
-######################################
-
-######################################
-# Content of custom ~/.bashrc file   #
-######################################
+# Source original .bashrc file
+if [ -f ~/.bashrc.orig ]; then
+    source ~/.bashrc.orig
+fi 
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -28,15 +19,15 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=10000
-HISTFILESIZE=\${HISTSIZE}
+HISTSIZE=100000
+HISTFILESIZE=${HISTSIZE}
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
 # set a fancy prompt (non-color, unless we know we "want" color)
-case "\$TERM" in
+case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
@@ -45,7 +36,7 @@ esac
 # should be on the output of commands, not on the prompt
 force_color_prompt=yes
 
-if [ -n "\$force_color_prompt" ]; then
+if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
         # We have color support; assume it's compliant with Ecma-48
         # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
@@ -56,21 +47,32 @@ if [ -n "\$force_color_prompt" ]; then
     fi
 fi
 
-if [ "\$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+# set the command prompt
+
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+if [ "$color_prompt" = yes ]; then
+    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='\u@\h:\w$ '
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
-case "\$TERM" in
+case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;\${debian_chroot:+(\$debian_chroot)}\u@\h: \w\a\]\$PS1"
+    PS1="\[\e]0;\u@\h: \w\a\]$PS1"
     ;;
 *)
     ;;
 esac
+
+# enable color support
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+fi
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like

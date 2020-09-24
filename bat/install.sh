@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 set -e
-pushd . > /dev/null
-cd $(dirname ${BASH_SOURCE[0]})
-SCRIPT_DIR=$(pwd)
-ROOT_DIR=$(readlink -f ${SCRIPT_DIR}/..)
-source ${ROOT_DIR}/env.sh
-source ${ROOT_DIR}/function.log.sh
-popd > /dev/null
+SCRIPT_DIR="$(dirname $0)"
+ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
+. ${ROOT_DIR}/env.sh
+. ${ROOT_DIR}/function.log.sh
 
 GITHUB_REPO="sharkdp/bat"
 
@@ -67,7 +64,7 @@ function download () {
     local filename_short="bat"
     local filename_full="${filename_short}-${actual_tag}"
     if [ -f "${target}/${filename_full}" ]; then
-        log "Artifact ${target}/${filename_full} has already been downloaded."
+        log "INFO" "Artifact ${target}/${filename_full} has already been downloaded."
     else
         log "INFO" "Download artifact for arch '${arch_type}' and libc '${libc_type}' with tag '${actual_tag}' from URL ${download_url}" 
         #wget "${download_url}"" -qO - | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/bat"
@@ -80,6 +77,4 @@ function download () {
     log "INFO" "Created symlink from ${target}/${filename_full} to ${target}/${filename_short}"
 }
 
-if [ "${BASH_SOURCE[0]}" == "$0" ]; then
-    download "$@"
-fi
+download "$@"
