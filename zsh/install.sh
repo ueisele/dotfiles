@@ -13,7 +13,7 @@ source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 
 function ensure_zsh_is_installed () {
-    (${INSTALL_PACKAGE_BIN} zsh)
+    ${INSTALL_PACKAGE_BIN} zsh
 }
 
 function ensure_prezto_installed () {

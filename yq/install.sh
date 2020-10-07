@@ -2,8 +2,8 @@
 set -e
 SCRIPT_DIR="$(dirname $0)"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
-. ${ROOT_DIR}/env.sh
-. ${ROOT_DIR}/function.log.sh
+source ${ROOT_DIR}/env.sh
+source ${ROOT_DIR}/function.log.sh
 
 GITHUB_REPO="mikefarah/yq"
 

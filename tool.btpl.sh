@@ -1,13 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
-
-render_templates_todir () {
-    local templatedir="${1:?"Missing template dir as first parameter!"}"
-    for template in $(find -H "${templatedir}" -maxdepth 4 -name '*.btpl' -not -path '*.git*'); do
-        local outdir="${2:-"$(dirname ${template})"}"
-        render_template_tofile "${template}" "${outdir}"
-    done
-}
+SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
+ROOT_DIR=${SCRIPT_DIR}
+source ${ROOT_DIR}/env.sh
 
 render_template_tofile () {
     local template="${1:?"Missing template file path as first parameter!"}"
@@ -22,3 +17,5 @@ render_template () {
 `cat ${template}`
 EOF"
 }
+
+render_template_tofile "$@"

@@ -6,16 +6,14 @@
 # Editors
 #
 
-$(if command -v less > /dev/null; then echo "export PAGER=less"; fi)
-$(
-    if command -v code > /dev/null || command -v code-insiders > /dev/null; then 
-        echo "export EDITOR=\"code -w\"" 
-        echo "export VISUAL=\"code -w\"" 
-    elif command -v vim > /dev/null; then 
-        echo "export EDITOR=vim" 
-        echo "export VISUAL=vim" 
-    fi
-)
+export PAGER=less
+if (( \$#commands[code] )) || (( \$#commands[code-insiders] )); then
+    export EDITOR="code -w" 
+    export VISUAL="code -w" 
+elif (( \$#commands[vim] )); then 
+    export EDITOR=vim 
+    export VISUAL=vim 
+fi
 
 #
 # Language
@@ -53,7 +51,7 @@ path=(
 export LESS='-F -g -i -M -R -S -w -X -z-4'
 
 # Set the Less input preprocessor.
-# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+# Try both lesspipe and lesspipe.sh as either might exist on a system.
 if (( \$#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env \$commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi

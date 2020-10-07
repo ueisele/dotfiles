@@ -2,12 +2,12 @@
 set -e
 SCRIPT_DIR="$(dirname $0)"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
-. ${ROOT_DIR}/env.sh
-. ${ROOT_DIR}/function.log.sh
+source ${ROOT_DIR}/env.sh
+source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 
 function ensure_git_is_installed () {
-    (${INSTALL_PACKAGE_BIN} git)
+    ${INSTALL_PACKAGE_BIN} git
 }
 
 function userSigningKey () {

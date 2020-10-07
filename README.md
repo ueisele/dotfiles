@@ -1,5 +1,10 @@
 # dotfiles (wip)
 
+## see
+
+* https://medium.com/@ivanaugustobd/your-terminal-can-be-much-much-more-productive-5256424658e8
+* https://github.com/caarlos0/dotfiles/tree/master/zsh
+
 ## Examples
 
 * https://dotfiles.github.io/inspiration/
