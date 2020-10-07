@@ -1,4 +1,4 @@
-alias exa='exa --group-directories-first --icons --group'
+alias exa='exa --group-directories-first --git --icons --group'
 alias el='exa -l'
 alias ela='exa -la'
 

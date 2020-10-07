@@ -1,3 +1,4 @@
+"" Created with https://vim-bootstrap.com/
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
@@ -6,9 +7,6 @@ if has('vim_starting')
 endif
 
 let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
-
-let g:vim_bootstrap_langs = "javascript,python"
-let g:vim_bootstrap_editor = "nvim"				" nvim or vim
 
 if !filereadable(vimplug_exists)
   echo "Installing Vim-Plug..."
@@ -28,11 +26,10 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
-Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' }
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-airline/vim-airline', { 'tag': 'v0.11' }
 Plug 'vim-airline/vim-airline-themes'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-scripts/grep.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'luochen1990/rainbow'
@@ -40,11 +37,10 @@ Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
-Plug 'avelino/vim-bootstrap-updater'
 
 let g:make = 'gmake'
 if exists('make')
-        let g:make = 'make'
+    let g:make = 'make'
 endif
 Plug 'Shougo/vimproc.vim', {'do': g:make}
 
@@ -53,28 +49,15 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 if v:version >= 703
-  Plug 'Shougo/vimshell.vim'
+  Plug 'Shougo/deol.nvim'
 endif
 
 if v:version >= 704
   "" Snippets
   Plug 'SirVer/ultisnips'
-  Plug 'FelikZ/ctrlp-py-matcher'
 endif
 
 Plug 'honza/vim-snippets'
-
-"*****************************************************************************
-"" Custom bundles
-"*****************************************************************************
-
-" javascript
-"" Javascript Bundle
-Plug 'jelera/vim-javascript-syntax'
-
-" python
-"" Python Bundle
-Plug 'davidhalter/jedi-vim'
 
 "*****************************************************************************
 "*****************************************************************************
@@ -185,10 +168,6 @@ syntax sync minlines=256
 set synmaxcol=300
 set re=1
 
-" never do this again --> :set paste <ctrl-v> :set no paste
-let &t_SI .= "\<Esc>[?2004h"
-let &t_EI .= "\<Esc>[?2004l"
-
 "" Status bar
 set laststatus=2
 
@@ -213,19 +192,6 @@ let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline_skip_empty_sections = 1
-
-"*****************************************************************************
-"" Plugin Settings
-"*****************************************************************************
-
-"" vim-better-whitespace
-" auto strip whitespace except for file with extention blacklisted
-let blacklist = []
-autocmd BufWritePre * StripWhitespace
-
-"" rainbow
-let g:rainbow_active = 1
-" vim:ts=2:sw=2:et
 
 "*****************************************************************************
 "" Abbreviations
@@ -265,11 +231,7 @@ let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_prompt =  '$ '
 
 " terminal emulation
-if g:vim_bootstrap_editor == 'nvim'
-  nnoremap <silent> <leader>sh :terminal<CR>
-else
-  nnoremap <silent> <leader>sh :VimShellCreate<CR>
-endif
+nnoremap <silent> <leader>sh :terminal<CR>
 
 "*****************************************************************************
 "" Functions
@@ -449,85 +411,17 @@ cmap w!! w !sudo tee > /dev/null %
 "" Custom configs
 "*****************************************************************************
 
-" javascript
-let g:javascript_enable_domhtmlcss = 1
+"" vim-better-whitespace
+" auto strip whitespace except for file with extention blacklisted
+let blacklist = []
+autocmd BufWritePre * StripWhitespace
 
-" vim-javascript
-augroup vimrc-javascript
-  autocmd!
-  autocmd FileType javascript set tabstop=4|set shiftwidth=4|set expandtab softtabstop=4 smartindent
-augroup END
-
-
-" php
-
-
-" python
-" vim-python
-augroup vimrc-python
-  autocmd!
-  autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=8 colorcolumn=79
-      \ formatoptions+=croq softtabstop=4 smartindent
-      \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
-augroup END
-
-" jedi-vim
-let g:jedi#popup_on_dot = 0
-let g:jedi#goto_assignments_command = "<leader>g"
-let g:jedi#goto_definitions_command = "<leader>d"
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<leader>n"
-let g:jedi#rename_command = "<leader>r"
-let g:jedi#show_call_signatures = "0"
-let g:jedi#completions_command = "<C-Space>"
-let g:jedi#smart_auto_mappings = 0
-
-" syntastic
-let g:syntastic_python_checkers=['python', 'flake8']
+"" rainbow
+let g:rainbow_active = 1
+" vim:ts=2:sw=2:et
 
 " vim-airline
 let g:airline#extensions#virtualenv#enabled = 1
-
-
-" ruby
-let g:rubycomplete_buffer_loading = 1
-let g:rubycomplete_classes_in_global = 1
-let g:rubycomplete_rails = 1
-
-augroup vimrc-ruby
-  autocmd!
-  autocmd BufNewFile,BufRead *.rb,*.rbw,*.gemspec setlocal filetype=ruby
-  autocmd FileType ruby set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
-augroup END
-
-let g:tagbar_type_ruby = {
-    \ 'kinds' : [
-        \ 'm:modules',
-        \ 'c:classes',
-        \ 'd:describes',
-        \ 'C:contexts',
-        \ 'f:methods',
-        \ 'F:singleton methods'
-    \ ]
-\ }
-
-" RSpec.vim mappings
-map <Leader>t :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
-
-" Ruby refactory
-nnoremap <leader>rap  :RAddParameter<cr>
-nnoremap <leader>rcpc :RConvertPostConditional<cr>
-nnoremap <leader>rel  :RExtractLet<cr>
-vnoremap <leader>rec  :RExtractConstant<cr>
-vnoremap <leader>relv :RExtractLocalVariable<cr>
-nnoremap <leader>rit  :RInlineTemp<cr>
-vnoremap <leader>rrlv :RRenameLocalVariable<cr>
-vnoremap <leader>rriv :RRenameInstanceVariable<cr>
-vnoremap <leader>rem  :RExtractMethod<cr>
-
 
 "*****************************************************************************
 "*****************************************************************************

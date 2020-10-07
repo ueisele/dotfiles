@@ -11,7 +11,7 @@ ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
-BTPL_BIN="${SCRIPT_DIR}/tool.btpl.sh"
+BTPL_BIN="${ROOT_DIR}/tool.btpl.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_zsh_is_installed () {

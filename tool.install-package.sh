@@ -32,7 +32,9 @@ ensure_installed () {
     # Try to install
     if command -v apt-get > /dev/null
     then
+        export DEBIAN_FRONTEND=noninteractive
         ${run} apt-get update && ${run} apt-get install -y ${package} && ${run} apt-get autoremove && ${run} apt-get clean
+        export DEBIAN_FRONTEND=interactive
         log "INFO" "Successfully installed ${package} with apt"
         return        
     fi

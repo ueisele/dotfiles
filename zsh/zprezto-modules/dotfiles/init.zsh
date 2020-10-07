@@ -9,7 +9,7 @@ fi
 
 # Source alias files.
 if [ -d  "${DOTFILES_ALIASES_DIR}" ]; then
-  for file in "${DOTFILES_ALIASES_DIR}/*"; do 
+  for file in ${DOTFILES_ALIASES_DIR}/*; do 
     source "$file"
   done
 fi

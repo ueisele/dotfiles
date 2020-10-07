@@ -18,6 +18,7 @@ ensure_additional_tools_are_installed () {
     ${INSTALL_PACKAGE_BIN} wget
     ${INSTALL_PACKAGE_BIN} less
     ${INSTALL_PACKAGE_BIN} gpg
+    ${INSTALL_PACKAGE_BIN} htop
 }
 
 ensure_dotfile_tools_are_installed () {

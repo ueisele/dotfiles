@@ -71,7 +71,7 @@ function download () {
         log "INFO" "Artifact ${target}/${filename_full} has already been downloaded."
     else
         log "INFO" "Download artifact for arch '${arch_type}' and os '${os_type}' with tag '${actual_tag}' from URL ${download_url}"
-        local tmpfile=$(mktemp)
+        local tmpfile="$(mktemp)"
         curl -sfLR -o "${tmpfile}" "${download_url}"
         unzip -o -d "${target}" "${tmpfile}"
         rm "${tmpfile}"
