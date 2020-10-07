@@ -10,13 +10,14 @@ ensure_required_tools_are_installed () {
     ${INSTALL_PACKAGE_BIN} bash
     ${INSTALL_PACKAGE_BIN} curl
     ${INSTALL_PACKAGE_BIN} git
+    ${INSTALL_PACKAGE_BIN} tar
+    ${INSTALL_PACKAGE_BIN} unzip
 }
 
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
     ${INSTALL_PACKAGE_BIN} wget
     ${INSTALL_PACKAGE_BIN} less
-    ${INSTALL_PACKAGE_BIN} vim
     ${INSTALL_PACKAGE_BIN} gpg
 }
 

@@ -3,6 +3,12 @@
 #
 
 #
+# SHELL
+#
+
+export SHELL=zsh
+
+#
 # Editors
 #
 
@@ -11,8 +17,8 @@ if (( \$#commands[code] )) || (( \$#commands[code-insiders] )); then
     export EDITOR="code -w" 
     export VISUAL="code -w" 
 elif (( \$#commands[vim] )); then 
-    export EDITOR=vim 
-    export VISUAL=vim 
+    export EDITOR=nvim 
+    export VISUAL=nvim 
 fi
 
 #
