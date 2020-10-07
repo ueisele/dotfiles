@@ -69,13 +69,12 @@ function download () {
         log "INFO" "Download artifact for arch '${arch_type}' and libc '${libc_type}' with tag '${actual_tag}' from URL ${download_url}"
         local tmpdir="$(mktemp -d)"
         curl -sfL "${download_url}" | tar -xz -C "${tmpdir}" --overwrite --strip-components=1
+        chown -R $(id -u):$(id -g) "${tmpdir}"
         mv -f "${tmpdir}/${filename_short}" "${target}/${filename_full}"
-        chown $(id -u):$(id -g) "${target}/${filename_full}"
         log "INFO" "Artifact has been downloaded to ${target}/${filename_full}"
 
         mkdir -p "${DOTFILES_COMPLETIONS_ZSH_DIR}"
         mv -f "${tmpdir}/autocomplete/${filename_short}.zsh" "${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}"
-        chown $(id -u):$(id -g) "${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}"
         log "INFO" "Created ZSH auto completion file ${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}"
 
         rm -r "${tmpdir}"
