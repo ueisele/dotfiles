@@ -5,6 +5,7 @@ ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
+LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_git_is_installed () {
     ${INSTALL_PACKAGE_BIN} git
@@ -75,5 +76,10 @@ function ensure_git_is_configured () {
     log "INFO" "Successfully configured git"
 }
 
+function ensure_dotfiles_are_linked () {
+	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
+}
+
 ensure_git_is_installed
 ensure_git_is_configured
+ensure_dotfiles_are_linked

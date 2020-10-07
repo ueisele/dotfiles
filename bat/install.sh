@@ -66,11 +66,19 @@ function download () {
     if [ -f "${target}/${filename_full}" ]; then
         log "INFO" "Artifact ${target}/${filename_full} has already been downloaded."
     else
-        log "INFO" "Download artifact for arch '${arch_type}' and libc '${libc_type}' with tag '${actual_tag}' from URL ${download_url}" 
-        #wget "${download_url}"" -qO - | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/bat"
-        curl -sfL "${download_url}" | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/${filename_short}"
-        mv -f "${target}/${filename_short}" "${target}/${filename_full}"
+        log "INFO" "Download artifact for arch '${arch_type}' and libc '${libc_type}' with tag '${actual_tag}' from URL ${download_url}"
+        local tmpdir=$(mktemp -d)
+        curl -sfL "${download_url}" | tar -xz -C "${tmpdir}" --overwrite --strip-components=1
+        #curl -sfL "${download_url}" | tar -xz -C "${target}" --overwrite --strip-components=1 --wildcards "*/${filename_short}"
+        #mv -f "${target}/${filename_short}" "${target}/${filename_full}"
+        mv -f "${tmpdir}/${filename_short}" "${target}/${filename_full}"
         log "INFO" "Artifact has been downloaded to ${target}/${filename_full}"
+
+        mkdir -p "${DOTFILES_COMPLETIONS_ZSH_DIR}"
+        mv -f "${tmpdir}/autocomplete/${filename_short}.zsh" "${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}"
+        log "INFO" "Created ZSH auto completion file ${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}"
+
+        rm -f "${tmpdir}"
     fi
 
     ln -sf "${target}/${filename_full}" "${target}/${filename_short}"

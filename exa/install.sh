@@ -4,6 +4,7 @@ SCRIPT_DIR="$(dirname $0)"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
+LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 GITHUB_REPO="ogham/exa"
 
@@ -53,7 +54,7 @@ function download () {
     local os_type=${3:-$(resolve_os_type)}
     local target="${4:-${DOTFILES_BIN_DIR}}"
 
-    local download_url="$(resolve_download_url ${tag} ${arch_type} ${libc_type})"   
+    local download_url="$(resolve_download_url ${tag} ${arch_type} ${os_type})"   
     if [ -z "${download_url}" ]; then
         fail 1 "Could not determine an artifact for arch '${arch_type}' and os '${os_type}' with tag '${tag}'."
     fi
@@ -76,10 +77,19 @@ function download () {
         rm "${tmpfile}"
         mv -f "${target}/${filename_short}-${os_type}-${arch_type}" "${target}/${filename_full}"        
         log "INFO" "Artifact has been downloaded to ${target}/${filename_full}"
+
+        mkdir -p "${DOTFILES_COMPLETIONS_ZSH_DIR}"
+        curl -sfLR -o "${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}" "https://raw.githubusercontent.com/${GITHUB_REPO}/${actual_tag}/contrib/completions.zsh"
+        log "INFO" "Created ZSH auto completion file ${DOTFILES_COMPLETIONS_ZSH_DIR}/_${filename_short}"
     fi
 
     ln -sf "${target}/${filename_full}" "${target}/${filename_short}"
     log "INFO" "Created symlink from ${target}/${filename_full} to ${target}/${filename_short}"
 }
 
+function link_aliases () {
+    ${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/aliases" "${DOTFILES_ALIASES_DIR}"
+}
+
 download "$@"
+link_aliases

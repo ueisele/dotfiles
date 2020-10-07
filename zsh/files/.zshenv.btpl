@@ -3,6 +3,17 @@
 #
 
 #
+# Dotfiles Variables
+#
+
+export DOTFILES_DIR=${DOTFILES_DIR}
+export DOTFILES_STORE_DIR="${DOTFILES_STORE_DIR}"
+export DOTFILES_BIN_DIR=${DOTFILES_BIN_DIR}
+export DOTFILES_CONFIG_DIR="${DOTFILES_CONFIG_DIR}"
+export DOTFILES_COMPLETIONS_ZSH_DIR="${DOTFILES_COMPLETIONS_ZSH_DIR}"
+export DOTFILES_ALIASES_DIR="${DOTFILES_ALIASES_DIR}"
+
+#
 # SHELL
 #
 
@@ -37,8 +48,6 @@ fi
 typeset -gU cdpath fpath mailpath path
 
 # Set the list of directories that Zsh searches for programs.
-export DOTFILES_DIR=${DOTFILES_DIR}
-export DOTFILES_BIN_DIR=${DOTFILES_BIN_DIR}
 path=(
   \${DOTFILES_BIN_DIR}
   \${HOME}/bin

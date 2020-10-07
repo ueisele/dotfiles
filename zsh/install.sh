@@ -11,6 +11,8 @@ ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
+BTPL_BIN="${SCRIPT_DIR}/tool.btpl.sh"
+LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_zsh_is_installed () {
     ${INSTALL_PACKAGE_BIN} zsh
@@ -28,6 +30,16 @@ function ensure_zsh_is_default_shell () {
     chsh -s /bin/zsh
 }
 
+function ensure_dotfiles_are_templated () {
+	${BTPL_BIN} "${SCRIPT_DIR}/files"
+}
+
+function ensure_dotfiles_are_linked () {
+	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
+}
+
 ensure_zsh_is_installed
 ensure_prezto_installed
 ensure_zsh_is_default_shell
+ensure_dotfiles_are_templated
+ensure_dotfiles_are_linked
