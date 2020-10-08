@@ -13,7 +13,8 @@ INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_neovim_is_installed () {
-    ${INSTALL_PACKAGE_BIN} neovim
+	${INSTALL_PACKAGE_BIN} --install centos=epel-release
+    ${INSTALL_PACKAGE_BIN} --install neovim
 }
 
 function ensure_dotfiles_are_linked () {
@@ -25,6 +26,11 @@ function ensure_plugins_are_installed () {
 	nvim +'PlugUpdate' +qa
 }
 
+function link_aliases () {
+    ${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/aliases" "${DOTFILES_ALIASES_DIR}"
+}
+
 ensure_neovim_is_installed
 ensure_dotfiles_are_linked
 ensure_plugins_are_installed
+link_aliases

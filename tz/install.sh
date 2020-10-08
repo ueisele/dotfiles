@@ -8,7 +8,7 @@ source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 
 function ensure_tzdata_is_installed () {
-    ${INSTALL_PACKAGE_BIN} tzdata
+    ${INSTALL_PACKAGE_BIN} --install tzdata
 }
 
 function ensure_timezone_is_europe_berkin () {

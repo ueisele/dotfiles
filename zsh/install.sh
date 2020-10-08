@@ -15,7 +15,7 @@ BTPL_BIN="${ROOT_DIR}/tool.btpl.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_zsh_is_installed () {
-    ${INSTALL_PACKAGE_BIN} zsh
+    ${INSTALL_PACKAGE_BIN} --install zsh
 }
 
 function ensure_prezto_installed () {

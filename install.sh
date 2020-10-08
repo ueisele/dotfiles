@@ -4,21 +4,18 @@ SCRIPT_DIR=$(dirname $0)
 . ${SCRIPT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN=${SCRIPT_DIR}/tool.install-package.sh
 
+ensure_package_database_is_updated () {
+    ${INSTALL_PACKAGE_BIN} --update
+}
+
 ensure_required_tools_are_installed () {
     log "INFO" "Installing required tools with package manager"
-    ${INSTALL_PACKAGE_BIN} bash
-    ${INSTALL_PACKAGE_BIN} curl
-    ${INSTALL_PACKAGE_BIN} git
-    ${INSTALL_PACKAGE_BIN} tar
-    ${INSTALL_PACKAGE_BIN} unzip
+    ${INSTALL_PACKAGE_BIN} --install bash curl git tar unzip
 }
 
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
-    ${INSTALL_PACKAGE_BIN} wget
-    ${INSTALL_PACKAGE_BIN} less
-    ${INSTALL_PACKAGE_BIN} gpg
-    ${INSTALL_PACKAGE_BIN} htop
+    ${INSTALL_PACKAGE_BIN} --install wget less htop debian=gnupg,ubuntu=gpg,fedora=gnupg2,arch=gnupg,alpine=gnupg,gnupg
 }
 
 ensure_dotfile_tools_are_installed () {
@@ -28,6 +25,12 @@ ensure_dotfile_tools_are_installed () {
     done
 }
 
+ensure_package_database_is_cleaned () {
+    ${INSTALL_PACKAGE_BIN} --clean
+}
+
+ensure_package_database_is_updated
 ensure_required_tools_are_installed
 ensure_additional_tools_are_installed
 ensure_dotfile_tools_are_installed
+ensure_package_database_is_cleaned

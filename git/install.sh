@@ -8,7 +8,7 @@ INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_git_is_installed () {
-    ${INSTALL_PACKAGE_BIN} git
+    ${INSTALL_PACKAGE_BIN} --install git
 }
 
 function userSigningKey () {
