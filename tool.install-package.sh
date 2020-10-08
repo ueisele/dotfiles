@@ -6,11 +6,12 @@ _UPDATE=false
 _CLEAN=false
 _INSTALL=false
 _PACKAGES=""
+_INSTALL_PARAMETER=""
 
 usage () {
     echo "$0: $1" >&2
     echo
-    echo "Usage: $0 [--update] [--clean] [--install <packages, e.g. alpine=gnupg,gpg tzdata>]"
+    echo "Usage: $0 [--update] [--clean] [--install <packages, e.g. alpine=gnupg,gpg tzdata>] [--install-parameter <parameter, e.g. centos=--enablerepo=epel-testing>]"
     echo
     return 1
 }
@@ -35,7 +36,7 @@ _main () {
 
 parseCmd () {
     if [ $# -eq 0 ]; then
-        usage "Requires at least one paramater!"
+        usage "Requires at least one parameter!"
         return $?
     fi
     while [ $# -gt 0 ]; do
@@ -58,9 +59,26 @@ parseCmd () {
                             ;;
                         *)
                             if [ -n "${_PACKAGES}" ]; then
-                                _PACKAGES="${_PACKAGES}:"
+                                _PACKAGES="${_PACKAGES} "
                             fi
                             _PACKAGES="${_PACKAGES}$1"
+                            shift
+                            ;;
+                    esac
+                done
+                ;;
+            --install-parameter)
+                shift
+                while [ $# -gt 0 ]; do
+                    case "$1" in
+                        ""|--*)
+                            break
+                            ;;
+                        *)
+                            if [ -n "${_INSTALL_PARAMETER}" ]; then
+                                _INSTALL_PARAMETER="${_INSTALL_PARAMETER} "
+                            fi
+                            _INSTALL_PARAMETER="${_INSTALL_PARAMETER}$1"
                             shift
                             ;;
                     esac
@@ -156,7 +174,7 @@ clean () {
 
 install_packages () {
     local current_ifs=$IFS
-    IFS=':'
+    IFS=' '
     for package_list in ${_PACKAGES}; do
         install_package_for_os $package_list
     done
@@ -183,6 +201,7 @@ determine_run_prefix () {
 
 install_package_for_os () {
     local package_list=${1:?Missing package list as first parameter!}
+    local current_ifs=$IFS
     IFS=','
     for entry in ${package_list}; do
         case "${entry}" in
@@ -190,12 +209,13 @@ install_package_for_os () {
                 local os=$(echo ${entry} | cut -d= -f1)
                 local package=$(echo ${entry} | cut -d= -f2)
                 if [ "${os}" = "$(current_os)" ]; then
-                    install_package ${package}
+                    install_package ${package} "$(resolve_install_paramerer_by_os $(current_os))"
                     break
                 fi
                 ;;
             *)
-                install_package ${entry}
+                resolve_install_paramerer_by_os $(current_os)
+                install_package ${entry} "$(resolve_install_paramerer_by_os $(current_os))"
                 break
                 ;;
         esac
@@ -207,15 +227,39 @@ current_os () {
     cat /etc/*-release | grep ^ID= | cut -d= -f2 | sed -e 's/^"//' -e 's/"$//'
 }
 
+resolve_install_paramerer_by_os () {
+    local os=${1:?Requires os as first parameter!}
+    local parameters_for_os=""
+    local current_ifs=$IFS
+    IFS=' '
+    for param_list in ${_INSTALL_PARAMETER}; do
+        IFS=','
+        for e in ${param_list}; do
+            local entry_os=$(echo ${e} | cut -d= -f1)
+            local entry_parameter=$(echo ${e} | cut -d= -f2-)
+            if [ "${entry_os}" = "${os}" ]; then
+                if [ -n "${parameters_for_os}" ]; then
+                    parameters_for_os="${parameters_for_os} "
+                fi
+                parameters_for_os="${parameters_for_os}${entry_parameter}"
+            fi
+        done
+        IFS=' '
+    done
+    IFS=${current_ifs}
+    echo "${parameters_for_os}"
+}
+
 install_package () {
-    local package="${1:?'Missing package as first parameter!'}"  
+    local package="${1:?'Missing package as first parameter!'}"
+    local parameter="${2:-""}"  
     local run="$(determine_run_prefix)"
     if command -v apt-get > /dev/null
     then
         export DEBIAN_FRONTEND=noninteractive
         if ! (dpkg-query --list ${package} 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} apt-get install -y ${package}
+            ${run} apt-get install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with apt"
             else
@@ -231,7 +275,7 @@ install_package () {
     then
         if ! (dnf list --installed -q ${package} 2>&1 &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} dnf install -y ${package}
+            ${run} dnf install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with dnf"
             else
@@ -246,7 +290,7 @@ install_package () {
     then
         if ! (yum list -q ${package} | grep -i installed 2>&1 &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} yum install -y ${package} && ${run} yum clean all
+            ${run} yum install -y ${parameter} ${package} && ${run} yum clean all
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with yum"
             else
@@ -261,7 +305,7 @@ install_package () {
     then
         if ! (pacman -Qi ${package} 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} pacman -S --noconfirm ${package} 
+            ${run} pacman -S --noconfirm ${parameter} ${package} 
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with pacman"
             else
@@ -276,7 +320,7 @@ install_package () {
     then
         if [ -z "$(apk list -I ${package})" ]; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} apk add ${package}
+            ${run} apk add ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with apk"
             else

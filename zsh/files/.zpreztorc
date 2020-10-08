@@ -28,8 +28,6 @@ zstyle ':prezto:load' pmodule-dirs $DOTFILES_DIR/zsh/zprezto-modules
 # Set the Prezto modules to load (browse modules).
 # The order matters.
 zstyle ':prezto:load' pmodule \
-  'dotfiles' \
-  'vscode' \
   'environment' \
   'terminal' \
   'editor' \
@@ -37,12 +35,13 @@ zstyle ':prezto:load' pmodule \
   'directory' \
   'spectrum' \
   'utility' \
-  'completion' \
   'history-substring-search' \
   'syntax-highlighting' \
   'autosuggestions' \
-  'prompt'
-
+  'prompt' \
+  'vscode' \
+  'dotfiles' \
+  'completion'
 #
 # Autosuggestions
 #

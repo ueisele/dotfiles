@@ -14,6 +14,8 @@ LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_neovim_is_installed () {
 	${INSTALL_PACKAGE_BIN} --install centos=epel-release
+	${INSTALL_PACKAGE_BIN} --install make gcc python3
+	pip3 install --user pynvim
     ${INSTALL_PACKAGE_BIN} --install neovim
 }
 

@@ -2,10 +2,6 @@
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
-if has('vim_starting')
-  set nocompatible               " Be iMproved
-endif
-
 let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
 
 if !filereadable(vimplug_exists)
@@ -23,41 +19,44 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 "*****************************************************************************
 "" Plug install packages
 "*****************************************************************************
-Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' }
+Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
+Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline', { 'tag': 'v0.11' }
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-scripts/grep.vim'
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'luochen1990/rainbow'
 Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
-Plug 'scrooloose/syntastic'
+Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
+Plug 'sheerun/vim-polyglot'
+Plug 'dracula/vim', {'as': 'dracula'}
+
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 let g:make = 'gmake'
 if exists('make')
     let g:make = 'make'
 endif
-Plug 'Shougo/vimproc.vim', {'do': g:make}
+Plug 'Shougo/vimproc.vim', { 'do': g:make }
 
-"" Vim-Session
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
+
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 
 if v:version >= 703
   Plug 'Shougo/deol.nvim'
 endif
 
-if v:version >= 704
-  "" Snippets
-  Plug 'SirVer/ultisnips'
-endif
-
-Plug 'honza/vim-snippets'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'luochen1990/rainbow'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 "*****************************************************************************
 "*****************************************************************************
@@ -71,7 +70,6 @@ call plug#end()
 
 " Required:
 filetype plugin indent on
-
 
 "*****************************************************************************
 "" Basic Setup
@@ -111,7 +109,12 @@ set noswapfile
 
 set fileformats=unix,dos,mac
 set showcmd
-set shell=/usr/bin/zsh
+
+if exists('$SHELL')
+    set shell=$SHELL
+else
+    set shell=/bin/sh
+endif
 
 " session management
 let g:session_directory = "~/.config/nvim/session"
@@ -132,24 +135,17 @@ if exists('+termguicolors')
 endif
 :silent! colorscheme dracula
 
-" set mousemodel=popup
-" set t_Co=256
-" set guioptions=egmrti
-" set gfn=Monospace\ 10
+set t_Co=256
+set guioptions=egmrti
+set gfn=Monospace\ 10
 
-"" Disable the blinking cursor.
-set gcr=a:blinkon0
-set scrolloff=3
+set ttyfast
+set lazyredraw          	      " Wait to redraw "
 
 "" In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
   set mouse=a
-endif
-
-"" If linux then set ttymouse
-let s:uname = system("echo -n \"$(uname)\"")
-if !v:shell_error && s:uname == "Linux" && !has('nvim')
-  set ttymouse=xterm
+  set mousemodel=popup
 endif
 
 "" Set cursor modes
@@ -157,9 +153,9 @@ set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 		  \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
 		  \,sm:block-blinkwait175-blinkoff150-blinkon175
 
-"" Tty
-set ttyfast
-set lazyredraw          	      " Wait to redraw "
+"" Disable the blinking cursor.
+set gcr=a:blinkon0
+set scrolloff=3
 
 " speed up syntax highlighting
 set nocursorcolumn
@@ -185,12 +181,18 @@ if exists("*fugitive#statusline")
   set statusline+=%{fugitive#statusline()}
 endif
 
+" Search mappings: These will make it so that going to the next one in a
+" search will center on the line it's found in.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
 " vim-airline
 let g:airline_theme = 'dracula'
-let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#virtualenv#enabled = 1
 let g:airline_skip_empty_sections = 1
 
 "*****************************************************************************
@@ -220,15 +222,17 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
 
+"" set shortcut for open Nerdtree
+map <C-n> :NERDTreeToggle<CR>
+
+"" Make Nerdtree show .files by default
+let NERDTreeShowHidden=1
+
 " grep.vim
 nnoremap <silent> <leader>f :Rgrep<CR>
 let Grep_Default_Options = '-IR'
 let Grep_Skip_Files = '*.log *.db'
 let Grep_Skip_Dirs = '.git node_modules'
-
-" vimshell.vim
-let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_prompt =  '$ '
 
 " terminal emulation
 nnoremap <silent> <leader>sh :terminal<CR>
@@ -247,10 +251,10 @@ endif
 "*****************************************************************************
 "" Autocmd Rules
 "*****************************************************************************
-"" The PC is fast enough, do syntax highlight syncing from start
+"" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
   autocmd!
-  autocmd BufEnter * :syntax sync fromstart
+  autocmd BufEnter * :syntax sync maxlines=200
 augroup END
 
 "" Remember cursor position
@@ -258,10 +262,6 @@ augroup vimrc-remember-cursor-position
   autocmd!
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
-
-"" open help vertically
-command! -nargs=* -complete=help Help vertical belowright help <args>
-autocmd FileType help wincmd L
 
 "" txt
 augroup vimrc-wrapping
@@ -277,6 +277,10 @@ augroup vimrc-make-cmake
 augroup END
 
 set autoread
+
+"" open help vertically
+command! -nargs=* -complete=help Help vertical belowright help <args>
+autocmd FileType help wincmd L
 
 "*****************************************************************************
 "" Mappings
@@ -315,25 +319,11 @@ noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
-"" ctrlp.vim
+"" fzf.vim
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
-let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|tox|ico|git|hg|svn))$'
-let g:ctrlp_user_command = "find %s -type f | grep -Ev '"+ g:ctrlp_custom_ignore +"'"
-let g:ctrlp_use_caching = 1
-
-" The Silver Searcher
-if executable('ag')
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-  let g:ctrlp_use_caching = 0
-endif
-
-cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
-noremap <leader>b :CtrlPBuffer<CR>
-let g:ctrlp_map = '<leader>e'
-let g:ctrlp_open_new_file = 'r'
-let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+nmap <C-o> :FZF -m<CR>
+nmap <C-s> :Ag<CR>
 
 " snippets
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -341,14 +331,8 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 let g:UltiSnipsEditSplit="vertical"
 
-" syntastic
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_error_symbol = '✗'
-let g:syntastic_style_warning_symbol = '⚠'
-let g:syntastic_auto_loc_list=1
-let g:syntastic_aggregate_errors = 1
+" ale
+let g:ale_linters = {}
 
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
@@ -410,6 +394,8 @@ cmap w!! w !sudo tee > /dev/null %
 "*****************************************************************************
 "" Custom configs
 "*****************************************************************************
+"" deoplete.nvim
+let g:deoplete#enable_at_startup = 1
 
 "" vim-better-whitespace
 " auto strip whitespace except for file with extention blacklisted
@@ -419,9 +405,6 @@ autocmd BufWritePre * StripWhitespace
 "" rainbow
 let g:rainbow_active = 1
 " vim:ts=2:sw=2:et
-
-" vim-airline
-let g:airline#extensions#virtualenv#enabled = 1
 
 "*****************************************************************************
 "*****************************************************************************
@@ -471,10 +454,6 @@ else
   let g:airline_symbols.linenr = ''
 endif
 
-set t_Co=16
-syntax enable                   "Use syntax highlighting
-let g:airline#extensions#tabline#enabled = 1
-
 "" set default identation
 set et
 set tabstop=2
@@ -486,16 +465,6 @@ set autoindent
 set complete-=i
 set showmatch
 set smarttab
-
-"" set shortcut for open Nerdtree
-map <C-n> :NERDTreeToggle<CR>
-
-"" ctrlP key for ctrlP plugin
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-
-"" Make Nerdtree show .files by default
-let NERDTreeShowHidden=1
 
 " ----------------------------------------- "
 " File Type settings 			    	          	"
