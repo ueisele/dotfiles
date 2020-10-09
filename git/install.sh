@@ -63,10 +63,16 @@ function ensure_git_is_configured () {
         git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
         git config --global difftool.vscode.trustExitCode false
         git config --global diff.tool vscode
-    elif command -v vimdiff > /dev/null; then 
-        git config --global merge.tool vimdiff
+    elif command -v nvim > /dev/null; then 
+        git config --global mergetool.vimdiff3.path nvim
+        git config --global merge.tool vimdiff3
 
-        git config --global diff.tool vimdiff
+        git config --global difftool.vimdiff3.path nvim
+        git config --global diff.tool vimdiff3
+    elif command -v vim > /dev/null; then 
+        git config --global merge.tool vimdiff3
+
+        git config --global diff.tool vimdiff3
     else
         git config --global --unset merge.tool || true
 

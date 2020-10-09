@@ -268,7 +268,7 @@ install_package () {
     fi
     if command -v dnf > /dev/null
     then
-        if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 > /dev/null) ; then
+        if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 > /dev/null) || ! (dnf list --installed -q ${package} 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
             ${run} dnf install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
@@ -276,8 +276,6 @@ install_package () {
             else
                 fail 1 "Could not install ${package} with dnf!"
             fi
-        elif ! (dnf list --installed -q ${package} 2>&1 > /dev/null) ; then
-            fail 1 "Could not install ${package} with yum! Package is not available."
         else
             log "INFO" "${package} is already installed"
         fi
@@ -285,7 +283,7 @@ install_package () {
     fi
     if command -v yum > /dev/null
     then
-        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available 2>&1 > /dev/null) ; then
+        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available 2>&1 > /dev/null) || ! (yum list -q ${package} 2> /dev/null | grep -i installed 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
             ${run} yum install -y ${parameter} ${package} && ${run} yum clean all
             if [ $? -eq 0 ]; then
@@ -293,8 +291,6 @@ install_package () {
             else
                 fail 1 "Could not install ${package} with yum!"
             fi
-        elif ! (yum list -q ${package} 2> /dev/null | grep -i installed 2>&1 > /dev/null) ; then
-            fail 1 "Could not install ${package} with yum! Package is not available."
         else
             log "INFO" "${package} is already installed"
         fi
