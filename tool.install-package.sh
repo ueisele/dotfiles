@@ -191,7 +191,7 @@ install_package_for_os () {
         local expected_os_version="$(get_version_of_entry "${entry}")"
         local comparator="$(get_version_comparator_of_entry "${entry}")"
         if ( ! has_entry_os_condition "${entry}" ) \
-            || ( [ "${expected_os}" == "$(current_os)" ] \
+            || ( [ "${expected_os}" = "$(current_os)" ] \
                 && ( ( ! has_entry_version_condition "${entry}" ) \
                     || ( [ -n "$(current_os_version)" ] && compare_version "$(current_os_version)" "${comparator}" "${expected_os_version}" ) ) ); then
             install_package "${package}" "$(resolve_install_paramerer)"
@@ -212,7 +212,7 @@ resolve_install_paramerer () {
             local the_expected_os="$(get_os_of_entry "${e}")"
             local the_expected_os_version="$(get_version_of_entry "${e}")"
             local the_comparator="$(get_version_comparator_of_entry "${e}")"
-            if [ "${the_expected_os}" == "$(current_os)" ] \
+            if [ "${the_expected_os}" = "$(current_os)" ] \
                 && ( ( ! has_entry_version_condition "${e}" ) \
                     || ( [ -n "$(current_os_version)" ] && compare_version "$(current_os_version)" "${the_comparator}" "${the_expected_os_version}") ); then
                 if [ -n "${parameters_for_os}" ]; then
@@ -383,7 +383,7 @@ get_value_of_entry () {
 get_group_of_entry () {
     local the_entry="${1:?Missing the entry as first parameter!}"
     local the_group="${2:?Missing the group numer as second parameter!}"
-    sed "s/\(\([^(=]*\)\((\([<>=]\+\)\(.*\))\)\?=\)\?\(.*\)/\\${the_group}/" <<< "${the_entry}"
+    echo "${the_entry}" | sed "s/\(\([^(=]*\)\((\([<>=]\+\)\(.*\))\)\?=\)\?\(.*\)/\\${the_group}/"
 }
 
 compare_version () {
