@@ -109,7 +109,7 @@ update () {
     fi
     if command -v dnf > /dev/null
     then
-        ${run} dnf --refresh check-upgrade
+        ${run} dnf check-update
         log "INFO" "Successfully updated package database with dnf"
         return        
     fi
@@ -140,20 +140,20 @@ clean () {
     if command -v apt-get > /dev/null
     then
         export DEBIAN_FRONTEND=noninteractive
-        ${run} apt-get autoremove && ${run} apt-get clean
+        ${run} apt-get clean -y
         log "INFO" "Successfully cleaned package cache with apt"
         export DEBIAN_FRONTEND=interactive
         return        
     fi
     if command -v dnf > /dev/null
     then
-        ${run} dnf autoremove && ${run} dnf clean all
-        log "INFO" "Successfullycleaned package cache with dnf"
+        ${run} dnf clean all -y
+        log "INFO" "Successfully cleaned package cache with dnf"
         return        
     fi
     if command -v yum > /dev/null
     then
-        ${run} yum clean all
+        ${run} yum clean all -y
         log "INFO" "Successfully cleaned package cache with yum"
         return        
     fi
@@ -252,7 +252,7 @@ install_package () {
     then
         if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 &> /dev/null) || ! (dnf list --installed -q ${package} 2>&1 &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} dnf install -y ${parameter} ${package}
+            ${run} dnf install -y --best --allowerasing ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with dnf"
             elif (is_url "${package}") ; then
@@ -269,7 +269,7 @@ install_package () {
     then
         if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available 2>&1 > /dev/null) || ! (yum list -q ${package} 2> /dev/null | grep -i installed 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} yum install -y ${parameter} ${package} && ${run} yum clean all
+            ${run} yum install -y --best --allowerasing ${parameter} ${package} && ${run} yum clean all
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with yum"
             elif (is_url "${package}") ; then

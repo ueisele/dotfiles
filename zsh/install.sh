@@ -15,7 +15,7 @@ BTPL_BIN="${ROOT_DIR}/tool.btpl.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_zsh_is_installed () {
-    ${INSTALL_PACKAGE_BIN} --install "fedora=util-linux-user,centos(>=8)=util-linux-user"
+    ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user"
     ${INSTALL_PACKAGE_BIN} --install \
         "centos(==7)=https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm"
     ${INSTALL_PACKAGE_BIN} \
@@ -25,7 +25,7 @@ function ensure_zsh_is_installed () {
 
 function ensure_prezto_installed () {
     if [ ! -d "${HOME}/.zprezto" ]; then
-        git clone --recursive --depth 1 --jobs 8 https://github.com/sorin-ionescu/prezto.git "${HOME}/.zprezto"
+        git clone --recursive --depth 1 $(jobs_if_possible 8) https://github.com/sorin-ionescu/prezto.git "${HOME}/.zprezto"
     else
         (cd "${HOME}/.zprezto" && git pull && git submodule update --init --recursive)
     fi
@@ -41,6 +41,19 @@ function ensure_dotfiles_are_templated () {
 
 function ensure_dotfiles_are_linked () {
 	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
+}
+
+function jobs_if_possible () {
+    local job_count=${1:-1}
+
+    local expeced_smallest_git_version="2.9.5"
+    local git_version="$(git --version | sed 's/git version \([0-9.]\+\)/\1/')"
+    
+    local lowest_version="$(echo -e "${expeced_smallest_git_version}\\n${git_version}" | sort -V | head -n1)"
+
+    if [ "${git_version}" != "${lowest_version}" ] || [ "${git_version}" == "${expeced_smallest_git_version}" ]; then
+        echo "--jobs ${job_count}"
+    fi
 }
 
 ensure_zsh_is_installed
