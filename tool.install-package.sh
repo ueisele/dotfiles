@@ -11,7 +11,7 @@ _INSTALL_PARAMETER=""
 usage () {
     echo "$0: $1" >&2
     echo
-    echo "Usage: $0 [--update] [--clean] [--install <packages, e.g. alpine=gnupg,gpg tzdata>] [--install-parameter <parameter, e.g. centos=--enablerepo=epel-testing>]"
+    echo "Usage: $0 [--update] [--clean] [--install <packages, e.g. alpine=gnupg,gpg centos(>=8)=git tzdata>] [--install-parameter <parameter, e.g. centos=--enablerepo=epel-testing>]"
     echo
     return 1
 }
@@ -200,48 +200,43 @@ determine_run_prefix () {
 }
 
 install_package_for_os () {
-    local package_list=${1:?Missing package list as first parameter!}
+    local package_list="${1:?Missing package list as first parameter!}"
     local current_ifs=$IFS
     IFS=','
     for entry in ${package_list}; do
-        case "${entry}" in
-            *=*)
-                local os=$(echo ${entry} | cut -d= -f1)
-                local package=$(echo ${entry} | cut -d= -f2)
-                if [ "${os}" = "$(current_os)" ]; then
-                    install_package ${package} "$(resolve_install_paramerer_by_os $(current_os))"
-                    break
-                fi
-                ;;
-            *)
-                resolve_install_paramerer_by_os $(current_os)
-                install_package ${entry} "$(resolve_install_paramerer_by_os $(current_os))"
-                break
-                ;;
-        esac
+        local package="$(get_value_of_entry "${entry}")"
+        local expected_os="$(get_os_of_entry "${entry}")"
+        local expected_os_version="$(get_version_of_entry "${entry}")"
+        local comparator="$(get_version_comparator_of_entry "${entry}")"
+        if ( ! has_entry_os_condition "${entry}" ) \
+            || ( [ "${expected_os}" == "$(current_os)" ] \
+                && ( ( ! has_entry_version_condition "${entry}" ) \
+                    || ( [ -n "$(current_os_version)" ] && compare_version "$(current_os_version)" "${comparator}" "${expected_os_version}" ) ) ); then
+            install_package "${package}" "$(resolve_install_paramerer)"
+            break
+        fi
     done
     IFS=${current_ifs}
 }
 
-current_os () {
-    cat /etc/*-release | grep ^ID= | cut -d= -f2 | sed -e 's/^"//' -e 's/"$//'
-}
-
-resolve_install_paramerer_by_os () {
-    local os=${1:?Requires os as first parameter!}
+resolve_install_paramerer () {
     local parameters_for_os=""
     local current_ifs=$IFS
     IFS=' '
     for param_list in ${_INSTALL_PARAMETER}; do
         IFS=','
         for e in ${param_list}; do
-            local entry_os=$(echo ${e} | cut -d= -f1)
-            local entry_parameter=$(echo ${e} | cut -d= -f2-)
-            if [ "${entry_os}" = "${os}" ]; then
+            local the_entry_parameter="$(get_value_of_entry "${e}")"
+            local the_expected_os="$(get_os_of_entry "${e}")"
+            local the_expected_os_version="$(get_version_of_entry "${e}")"
+            local the_comparator="$(get_version_comparator_of_entry "${e}")"
+            if [ "${the_expected_os}" == "$(current_os)" ] \
+                && ( ( ! has_entry_version_condition "${e}" ) \
+                    || ( [ -n "$(current_os_version)" ] && compare_version "$(current_os_version)" "${the_comparator}" "${the_expected_os_version}") ); then
                 if [ -n "${parameters_for_os}" ]; then
                     parameters_for_os="${parameters_for_os} "
                 fi
-                parameters_for_os="${parameters_for_os}${entry_parameter}"
+                parameters_for_os="${parameters_for_os}${the_entry_parameter}"
             fi
         done
         IFS=' '
@@ -273,7 +268,7 @@ install_package () {
     fi
     if command -v dnf > /dev/null
     then
-        if ! (dnf list --installed -q ${package} 2>&1 &> /dev/null) ; then
+        if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
             ${run} dnf install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
@@ -281,6 +276,8 @@ install_package () {
             else
                 fail 1 "Could not install ${package} with dnf!"
             fi
+        elif ! (dnf list --installed -q ${package} 2>&1 > /dev/null) ; then
+            fail 1 "Could not install ${package} with yum! Package is not available."
         else
             log "INFO" "${package} is already installed"
         fi
@@ -288,7 +285,7 @@ install_package () {
     fi
     if command -v yum > /dev/null
     then
-        if ! (yum list -q ${package} | grep -i installed 2>&1 &> /dev/null) ; then
+        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available 2>&1 > /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
             ${run} yum install -y ${parameter} ${package} && ${run} yum clean all
             if [ $? -eq 0 ]; then
@@ -296,6 +293,8 @@ install_package () {
             else
                 fail 1 "Could not install ${package} with yum!"
             fi
+        elif ! (yum list -q ${package} 2> /dev/null | grep -i installed 2>&1 > /dev/null) ; then
+            fail 1 "Could not install ${package} with yum! Package is not available."
         else
             log "INFO" "${package} is already installed"
         fi
@@ -333,6 +332,103 @@ install_package () {
     fi
 
     fail 1 "Could not install ${package}, with apt, dnf, yum, pacman or apk!" 
+}
+
+current_os () {
+    if [ -e /etc/os-release ]; then
+        cat /etc/os-release | grep ^ID= | cut -d= -f2 | sed -e 's/^"//' -e 's/"$//'
+    elif [ -e /etc/centos-release ]; then
+        # Centos == 6
+        echo "centos"
+    fi
+}
+
+current_os_version () {
+    if [ -e /etc/os-release ]; then
+        cat /etc/os-release | grep ^VERSION_ID= | cut -d= -f2 | sed -e 's/^"//' -e 's/"$//'
+    elif [ -e /etc/system-release ]; then
+        # Centos == 6
+        cat /etc/centos-release | sed "s/.* \([0-9]\+\).*/\1/"
+    fi
+}
+
+has_entry_os_condition () {
+    if [ -z "$(get_os_of_entry "$@")" ]; then return 1; else return 0; fi
+}
+
+has_entry_version_condition () {
+    if [ -z "$(get_version_of_entry "$@")" ]; then return 1; else return 0; fi
+}
+
+get_os_of_entry () {
+    local the_entry="${1:?Missing the entry as first parameter!}"
+    get_group_of_entry "${the_entry}" 2
+}
+
+get_version_comparator_of_entry () {
+    local the_entry="${1:?Missing the entry as first parameter!}"
+    get_group_of_entry "${the_entry}" 4
+}
+
+get_version_of_entry () {
+    local the_entry="${1:?Missing the entry as first parameter!}"
+    get_group_of_entry "${the_entry}" 5
+}
+
+get_value_of_entry () {
+    local the_entry="${1:?Missing the entry as first parameter!}"
+    get_group_of_entry "${the_entry}" 6
+}
+
+get_group_of_entry () {
+    local the_entry="${1:?Missing the entry as first parameter!}"
+    local the_group="${2:?Missing the group numer as second parameter!}"
+    sed "s/\(\([^(=]*\)\((\([<>=]\+\)\(.*\))\)\?=\)\?\(.*\)/\\${the_group}/" <<< "${the_entry}"
+}
+
+compare_version () {
+    local lhs_version="${1:?Missing LHS version as first parameter!}"
+    local version_comparator="${2:?Missing version comparator as second parameter!}"
+    local rhs_version="${3:?Missing RHS version as third parameter!}"
+
+    local lowest_version="$(echo -e "${lhs_version}\\n${rhs_version}" | sort -V | head -n1)"
+
+    case "${version_comparator}" in
+        "==")
+             return $(test "${lhs_version}" == "${rhs_version}")
+            ;;
+        ">")
+            return $(test "${lhs_version}" != "${lowest_version}")
+            ;;
+        "<")
+            return $(test "${lhs_version}" == "${lowest_version}")
+            ;;
+        ">=")
+            $(test "${lhs_version}" != "${lowest_version}" || test "${lhs_version}" == "${rhs_version}")
+            ;;
+        "<=")
+            return $(test "${lhs_version}" == "${lowest_version}" || test "${lhs_version}" == "${rhs_version}")
+            ;;
+        *)
+            log "WARN" "'${version_comparator}' is not a valid version comparator! Use one of: ==, >, <, >=, <="
+            return 1
+            ;;
+    esac
+}
+
+is_url () {
+    local the_value="${1:?Requires a value as first parameter}"
+    case "${the_value}" in
+        http://*)
+            return 0
+            ;;
+        https://*)
+            return 0
+            ;;
+        *)  
+            return 1 
+            ;;
+    esac
 }
 
 _main "$@"
