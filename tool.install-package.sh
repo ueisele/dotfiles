@@ -391,23 +391,23 @@ compare_version () {
     local version_comparator="${2:?Missing version comparator as second parameter!}"
     local rhs_version="${3:?Missing RHS version as third parameter!}"
 
-    local lowest_version="$(echo -e "${lhs_version}\\n${rhs_version}" | sort -V | head -n1)"
+    local lowest_version="$(printf "${lhs_version}\\n${rhs_version}" | sort -V | head -n1)"
 
     case "${version_comparator}" in
         "==")
-             return $(test "${lhs_version}" == "${rhs_version}")
+            test "${lhs_version}" = "${rhs_version}"
             ;;
         ">")
-            return $(test "${lhs_version}" != "${lowest_version}")
+            test "${lhs_version}" != "${lowest_version}"
             ;;
         "<")
-            return $(test "${lhs_version}" == "${lowest_version}")
+            test "${lhs_version}" = "${lowest_version}" && test "${lhs_version}" != "${rhs_version}"
             ;;
         ">=")
-            $(test "${lhs_version}" != "${lowest_version}" || test "${lhs_version}" == "${rhs_version}")
+            test "${lhs_version}" != "${lowest_version}" || test "${lhs_version}" = "${rhs_version}"
             ;;
         "<=")
-            return $(test "${lhs_version}" == "${lowest_version}" || test "${lhs_version}" == "${rhs_version}")
+            test "${lhs_version}" = "${lowest_version}" || test "${lhs_version}" = "${rhs_version}"
             ;;
         *)
             log "WARN" "'${version_comparator}' is not a valid version comparator! Use one of: ==, >, <, >=, <="
