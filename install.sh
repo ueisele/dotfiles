@@ -21,7 +21,7 @@ ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
     ${INSTALL_PACKAGE_BIN} --install wget less "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg"
     ${INSTALL_PACKAGE_BIN} --install "centos=epel-release" htop
-    ${INSTALL_PACKAGE_BIN} --install "ubuntu=silversearcher-ag,the_silver_searcher" --install-parameter "centos(>=8)=--enablerepo=epel-testing"
+    ${INSTALL_PACKAGE_BIN} --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher" --install-parameter "centos(>=8)=--enablerepo=epel-testing"
 }
 
 ensure_dotfile_tools_are_installed () {

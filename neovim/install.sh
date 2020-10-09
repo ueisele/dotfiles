@@ -9,6 +9,7 @@ SCRIPT_DIR="$(dirname ${BASH_SOURCE[0]})"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
+source ${ROOT_DIR}/function.os.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
@@ -41,7 +42,7 @@ function create_target_dir () {
     mkdir -p "${target}"
 }
 
-function ensure_neovim_is_installed () {
+function download_and_install_neovim () {
     local tag=${1:-"latest"}
     local target="${2:-${DOTFILES_APP_DIR}}"
 	local targetbin="${3:-${DOTFILES_BIN_DIR}}"
@@ -83,8 +84,19 @@ function ensure_neovim_is_installed () {
     log "INFO" "Created symlink from ${target}/${filename_full}/AppRun to ${targetbin}/${filename_full} and ${targetbin}/${filename_short}"
 }
 
+function ensure_neovim_is_installed () {
+	if [ "$(current_os)" != "alpine" ]; then
+		download_and_install_neovim "$@"
+	else
+		${INSTALL_PACKAGE_BIN} --install neovim
+	fi
+}
+
 function ensure_neovim_requirements_are_installed () {
-	${INSTALL_PACKAGE_BIN} --install git make gcc python3 "arch=python-pip,manjaro=python-pip,alpine=py3-pip,python3-pip"
+	${INSTALL_PACKAGE_BIN} --install \
+		git make gcc python3 \
+		"arch=python-pip,manjaro=python-pip,alpine=py3-pip,python3-pip" \
+		"alpine=python3-dev" "alpine=musl-dev"
 	pip3 install --user --upgrade pynvim
 }
 
@@ -93,8 +105,12 @@ function ensure_dotfiles_are_linked () {
 }
 
 function ensure_plugins_are_installed () {
-	${DOTFILES_BIN_DIR}/nvim +'PlugInstall --sync' +qa
-	${DOTFILES_BIN_DIR}/nvim +'PlugUpdate' +qa
+	if [ "$(current_os)" != "alpine" ]; then
+		local nvim_path="${DOTFILES_BIN_DIR}/"
+	fi
+
+	${nvim_path}nvim +'PlugInstall --sync' +qa
+	${nvim_path}nvim +'PlugUpdate' +qa
 }
 
 function link_aliases () {

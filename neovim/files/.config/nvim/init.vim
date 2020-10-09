@@ -1,4 +1,13 @@
 "" Created with https://vim-bootstrap.com/
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Check python version if available
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("python")
+    python import pynvim; from sys import version_info as v; pynvim.command('let python_version=%d' % (v[0] * 100 + v[1]))
+else
+    let python_version=0
+endif
+
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
@@ -54,9 +63,12 @@ if v:version >= 703
   Plug 'Shougo/deol.nvim'
 endif
 
+if python_version >= 361
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+endif
+
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'luochen1990/rainbow'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 "*****************************************************************************
 "*****************************************************************************

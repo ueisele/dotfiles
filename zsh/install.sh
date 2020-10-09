@@ -10,12 +10,19 @@ SCRIPT_DIR="$(dirname $0)"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
+source ${ROOT_DIR}/function.os.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 BTPL_BIN="${ROOT_DIR}/tool.btpl.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
+function ensure_zsh_requirements_are_installed () {
+    ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user,alpine=shadow"
+    if [ "$(current_os)" = "alpine" ]; then
+        printf "#%%PAM-1.0\\nauth       sufficient   pam_shells.so" | $(sudo_if_required) tee -a /etc/pam.d/chsh 
+    fi
+}
+
 function ensure_zsh_is_installed () {
-    ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user"
     ${INSTALL_PACKAGE_BIN} --install \
         "centos(==7)=https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm"
     ${INSTALL_PACKAGE_BIN} \
@@ -56,6 +63,7 @@ function jobs_if_possible () {
     fi
 }
 
+ensure_zsh_requirements_are_installed
 ensure_zsh_is_installed
 ensure_prezto_installed
 ensure_zsh_is_default_shell
