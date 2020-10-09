@@ -181,24 +181,6 @@ install_packages () {
     IFS=${current_ifs}
 }
 
-determine_run_prefix () {
-    local run=""
-    if [ "$(id -u)" -ne 0 ]; then
-        log "INFO" "Installation triggerd as non root user, try to install ${command} with sudo"
-        # Check if sudo is installed and sudo access is allowed
-        if ! command -v sudo > /dev/null
-        then
-            fail 1 "Could not install ${command}, because sudo is not installed"     
-        fi
-        if ! sudo -v > /dev/null
-        then
-            fail 1 "Could not install ${command}, because sudo access is not allowed"     
-        fi
-        run="sudo"
-    fi
-    echo ${run}
-}
-
 install_package_for_os () {
     local package_list="${1:?Missing package list as first parameter!}"
     local current_ifs=$IFS
@@ -268,11 +250,13 @@ install_package () {
     fi
     if command -v dnf > /dev/null
     then
-        if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 > /dev/null) || ! (dnf list --installed -q ${package} 2>&1 > /dev/null) ; then
+        if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 &> /dev/null) || ! (dnf list --installed -q ${package} 2>&1 &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
             ${run} dnf install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with dnf"
+            elif (is_url "${package}") ; then
+                log "INFO" "Could not install ${package} with dnf." 
             else
                 fail 1 "Could not install ${package} with dnf!"
             fi
@@ -288,6 +272,8 @@ install_package () {
             ${run} yum install -y ${parameter} ${package} && ${run} yum clean all
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with yum"
+            elif (is_url "${package}") ; then
+                log "INFO" "Could not install ${package} with yum." 
             else
                 fail 1 "Could not install ${package} with yum!"
             fi
@@ -328,6 +314,24 @@ install_package () {
     fi
 
     fail 1 "Could not install ${package}, with apt, dnf, yum, pacman or apk!" 
+}
+
+determine_run_prefix () {
+    local run=""
+    if [ "$(id -u)" -ne 0 ]; then
+        log "INFO" "Installation triggerd as non root user, try to install ${command} with sudo"
+        # Check if sudo is installed and sudo access is allowed
+        if ! command -v sudo > /dev/null
+        then
+            fail 1 "Could not install ${command}, because sudo is not installed"     
+        fi
+        if ! sudo -v > /dev/null
+        then
+            fail 1 "Could not install ${command}, because sudo access is not allowed"     
+        fi
+        run="sudo"
+    fi
+    echo ${run}
 }
 
 current_os () {

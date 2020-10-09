@@ -16,7 +16,11 @@ LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_zsh_is_installed () {
     ${INSTALL_PACKAGE_BIN} --install "fedora=util-linux-user,centos(>=8)=util-linux-user"
-    ${INSTALL_PACKAGE_BIN} --install zsh
+    ${INSTALL_PACKAGE_BIN} --install \
+        "centos(==7)=https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm"
+    ${INSTALL_PACKAGE_BIN} \
+        --install-parameter "centos(==7)=--enablerepo=gf-plus" \
+        --install zsh
 }
 
 function ensure_prezto_installed () {
@@ -28,7 +32,7 @@ function ensure_prezto_installed () {
 }
 
 function ensure_zsh_is_default_shell () {
-    chsh -s /bin/zsh
+    chsh -s $(command -v zsh)
 }
 
 function ensure_dotfiles_are_templated () {

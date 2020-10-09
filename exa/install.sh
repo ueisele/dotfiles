@@ -11,6 +11,12 @@ GITHUB_REPO="ogham/exa"
 # notes:
 # - https://github.com/ogham/exa
 
+function resolve_github_credentials () {
+    if [ -n "${GITHUB_USER}" ] && [ -n "${GITHUB_TOKEN}" ]; then
+        echo "-u ${GITHUB_USER}:${GITHUB_TOKEN}"
+    fi
+}
+
 function resolve_arch_type () {
     uname -m
 }
@@ -32,7 +38,7 @@ function resolve_download_url () {
 
     local query=$(if [ ${tag} == "latest" ]; then echo ${tag}; else echo "tags/${tag}"; fi)
     
-    curl -sL https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | grep ${arch_type} | grep ${os_type}
+    curl $(resolve_github_credentials) -sL https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | grep ${arch_type} | grep ${os_type}
 }
 
 function resolve_actual_tag () {
@@ -40,7 +46,7 @@ function resolve_actual_tag () {
 
     local query=$(if [ ${tag} == "latest" ]; then echo ${tag}; else echo "tags/${tag}"; fi)
     
-    curl -sL https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+    curl $(resolve_github_credentials) -sL https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
 }
 
 function create_target_dir () {
