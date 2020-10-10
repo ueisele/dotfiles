@@ -69,5 +69,3 @@ compare_version () {
             ;;
     esac
 }
-
-sudo_if_required
