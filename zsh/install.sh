@@ -42,7 +42,7 @@ function ensure_zsh_is_default_shell () {
     local expeced_shell="$(command -v zsh)"
     if [ "${current_shell}" != "${expeced_shell}" ]; then
         log "INFO" "Change login shell of $(id -un) from ${current_shell} to ${expeced_shell}"
-        chsh -s "${current_shell}"
+        chsh -s "${expeced_shell}"
     fi
 }
 

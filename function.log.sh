@@ -18,6 +18,6 @@ caller () {
         local escaped_dotfiles_dir="$(echo "${DOTFILES_DIR}" | sed 's/\//\\\//g' )"
         echo "$(realpath $0 | sed "s/${escaped_dotfiles_dir}\///g")"
     else
-        echo "$0"
+        echo "$(basename $0)"
     fi
 }
