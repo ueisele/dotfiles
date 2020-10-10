@@ -10,5 +10,14 @@ fail () {
 log () {
     local level="${1:?'Missing log level as first parameter!'}"
     local msg="${2:?'Missing log level as second parameter!'}"
-    echo "$(date -Isec)|${level}|${msg}"
+    echo "$(date -Isec)|$(caller)|${level}|${msg}"
+}
+
+caller () {
+    if [ -n "${DOTFILES_DIR}" ]; then
+        local escaped_dotfiles_dir="$(echo "${DOTFILES_DIR}" | sed 's/\//\\\//g' )"
+        echo "$(realpath $0 | sed "s/${escaped_dotfiles_dir}\///g")"
+    else
+        echo "$0"
+    fi
 }

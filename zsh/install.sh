@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-
-# notes:
-# - https://medium.com/@rajsek/zsh-bash-startup-files-loading-order-bashrc-zshrc-etc-e30045652f2e
-# - https://wiki.archlinux.org/index.php/zsh
-# - https://wiki.archlinux.org/index.php/Color_output_in_console
-
 set -e
 SCRIPT_DIR="$(dirname $0)"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"

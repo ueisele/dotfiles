@@ -8,9 +8,6 @@ LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 GITHUB_REPO="ogham/exa"
 
-# notes:
-# - https://github.com/ogham/exa
-
 function resolve_github_credentials () {
     if [ -n "${GITHUB_USER}" ] && [ -n "${GITHUB_TOKEN}" ]; then
         echo "-u ${GITHUB_USER}:${GITHUB_TOKEN}"

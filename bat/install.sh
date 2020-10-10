@@ -7,12 +7,6 @@ source ${ROOT_DIR}/function.log.sh
 
 GITHUB_REPO="sharkdp/bat"
 
-# notes:
-# - https://github.com/sharkdp/bat
-# - https://github.com/eth-p/bat-extras
-# - https://github.com/dandavison/delta
-# - https://github.com/burntsushi/ripgrep
-
 function resolve_github_credentials () {
     if [ -n "${GITHUB_USER}" ] && [ -n "${GITHUB_TOKEN}" ]; then
         echo "-u ${GITHUB_USER}:${GITHUB_TOKEN}"

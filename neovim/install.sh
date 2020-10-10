@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-
-# notes:
-# - https://neovim.io/
-# - https://github.com/caarlos0/dotfiles/tree/master/vim
-
 set -e
 SCRIPT_DIR="$(dirname ${BASH_SOURCE[0]})"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
