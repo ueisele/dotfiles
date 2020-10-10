@@ -19,7 +19,7 @@ echo $SAYINGS[$(($RANDOM % ${#SAYINGS} + 1))]
 # Load custom zlogout from ~/.zsh/zlogout.d
 #
 if [[ -d ${HOME}/.zsh/zlogout.d/ ]]; then
-	for zlogout in ${HOME}/.zsh/zlogout.d/*.zsh; do
+	for zlogout in ${HOME}/.zsh/zlogout.d/*.zsh(N); do
 		test -r "$zlogout" && source "$zlogout"
 	done
 	unset zlogout

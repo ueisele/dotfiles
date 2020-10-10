@@ -21,7 +21,7 @@ fi
 # Load custom zshrc from ~/.zsh/zshrc.d
 #
 if [[ -d ${HOME}/.zsh/zshrc.d/ ]]; then
-	for zshrc in ${HOME}/.zsh/zshrc.d/*.zsh; do
+	for zshrc in ${HOME}/.zsh/zshrc.d/*.zsh(N); do
 		test -r "$zshrc" && source "$zshrc"
 	done
 	unset zshrc

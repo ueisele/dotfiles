@@ -16,6 +16,7 @@ function userSigningKey () {
 }
 
 function ensure_git_is_configured () {
+    log "INFO" "Configuring Git"
     ## User
 
     git config --global user.name "${USER_FULLNAME:-$(whoami)}"
@@ -79,10 +80,11 @@ function ensure_git_is_configured () {
         git config --global --unset diff.tool || true
     fi
 
-    log "INFO" "Successfully configured git"
+    log "INFO" "Successfully configured Git"
 }
 
 function ensure_dotfiles_are_linked () {
+    log "INFO" "Linking Git dotfiles to ${HOME}"
 	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
 }
 

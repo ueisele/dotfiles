@@ -26,7 +26,7 @@ fi >&2
 # Load custom zlogin from ~/.zsh/zlogin.d
 #
 if [[ -d ${HOME}/.zsh/zlogin.d/ ]]; then
-	for zlogin in ${HOME}/.zsh/zlogin.d/*.zsh; do
+	for zlogin in ${HOME}/.zsh/zlogin.d/*.zsh(N); do
 		test -r "$zlogin" && source "$zlogin"
 	done
 	unset zlogin
