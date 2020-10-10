@@ -1,21 +1,34 @@
 #!/usr/bin/env sh
 
+_log () {
+    local level="${1:?'Missing log level as first parameter!'}"
+    local msg="${2:?'Missing log level as second parameter!'}"
+    echo "$(date -Isec)|${level}|${msg}"
+}
+
 sudo_if_required () {
-    local run=""
+    local alternative_action=${1:-"skip"}
+    local run_prefix=""
     if [ "$(id -u)" -ne 0 ]; then
-        log "INFO" "Installation triggerd as non root user, try to install ${command} with sudo"
-        # Check if sudo is installed and sudo access is allowed
-        if ! command -v sudo > /dev/null
-        then
-            fail 1 "Could not install ${command}, because sudo is not installed"     
+        if ! command -v sudo > /dev/null ; then
+            # sudo is not installed"
+            if [ "${alternative_action}" = "abort" ]; then
+                run_prefix="$(log "ERROR" "Aboring execution, because sudo is not installed!"); exit 1; "
+            else
+                run_prefix="$(log "WARN" "Skipping command, because sudo is not installed!") || "
+            fi  
+        elif ! sudo -v > /dev/null ; then
+            # sudo access is not allowed"
+            if [ "${alternative_action}" = "abort" ]; then
+                run_prefix="$(log "ERROR" "Aboring execution, because sudo access is not allowed!"); exit 1; "
+            else
+                run_prefix="$(log "WARN" "Skipping command, because sudo access is not allowed!") || "
+            fi  
+        else
+            run_prefix="sudo "
         fi
-        if ! sudo -v > /dev/null
-        then
-            fail 1 "Could not install ${command}, because sudo access is not allowed"     
-        fi
-        run="sudo"
     fi
-    echo ${run}
+    echo ${run_prefix}
 }
 
 current_os () {
@@ -65,3 +78,5 @@ compare_version () {
             ;;
     esac
 }
+
+sudo_if_required

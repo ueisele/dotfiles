@@ -21,3 +21,13 @@ if [[ -o INTERACTIVE && -t 2 ]]; then
   fi
 
 fi >&2
+
+#
+# Load custom zlogin from ~/.zsh/zlogin.d
+#
+if [[ -d ${HOME}/.zsh/zlogin.d/ ]]; then
+	for zlogin in ${HOME}/.zsh/zlogin.d/*.zsh; do
+		test -r "$zlogin" && source "$zlogin"
+	done
+	unset zlogin
+fi

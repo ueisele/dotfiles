@@ -14,10 +14,15 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Source custom zshrc file
-if [[ -s "${$HOME}/.zshrc.custom" ]]; then
-  source "${$HOME}/.zshrc.custom"
-fi
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+#
+# Load custom zshrc from ~/.zsh/zshrc.d
+#
+if [[ -d ${HOME}/.zsh/zshrc.d/ ]]; then
+	for zshrc in ${HOME}/.zsh/zshrc.d/*.zsh; do
+		test -r "$zshrc" && source "$zshrc"
+	done
+	unset zshrc
+fi
