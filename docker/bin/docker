@@ -1,0 +1,41 @@
+#!/usr/bin/env zsh
+
+_docker () {
+  if ! docker_command="$(_docker_command)"; then
+    echo "command not found: docker"
+    exit 1
+  fi
+  if [[ $1 == "run" ]]; then
+    shift
+    command ${docker_command} run $(_env_variables) "$@"
+  else
+    command ${docker_command} "$@"
+  fi
+}
+
+_docker_command () {
+  if (( $+commands[whereis] )); then
+    local dotfiles_bin_dir_array=(${DOTFILES_BIN_DIR})
+    whereis -b -B ${path:|dotfiles_bin_dir_array} -f docker | cut -d" " -f2
+  elif [ -x "/usr/bin/docker" ]; then
+    printf "/usr/bin/docker"
+  elif [ -x "/bin/docker" ]; then
+    printf "/bin/docker"
+  else
+    printf "echo"
+    return 1
+  fi
+}
+
+_env_variables () {
+  for v in ${docker_env_vars}; do
+    printf "$(_env_if_defined "${v}") "
+  done
+}
+
+_env_if_defined () {
+  local varname=${1:?Requires variable name as first parameter!}
+  [[ -n "$(eval "echo \$${varname}")" ]] && printf "--env ${varname}"
+}
+
+_docker "$@"

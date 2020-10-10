@@ -27,7 +27,7 @@ export PAGER=less
 if (( \$#commands[code] )) || (( \$#commands[code-insiders] )); then
     export EDITOR="code -w" 
     export VISUAL="code -w" 
-elif (( \$#commands[vim] )); then 
+elif (( \$#commands[nvim] )); then 
     export EDITOR=nvim 
     export VISUAL=nvim 
 fi
