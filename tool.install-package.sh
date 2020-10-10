@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 SCRIPT_DIR="$(dirname $0)"
-. ${SCRIPT_DIR}/function.log.sh
-. ${SCRIPT_DIR}/function.os.sh
+ROOT_DIR="$(readlink -f ${SCRIPT_DIR})"
+. ${ROOT_DIR}/function.log.sh
+. ${ROOT_DIR}/function.os.sh
 
 _UPDATE=false
 _CLEAN=false
@@ -232,7 +233,7 @@ install_package () {
     if command -v apt-get > /dev/null
     then
         export DEBIAN_FRONTEND=noninteractive
-        if ! (dpkg-query --list ${package} &> /dev/null) ; then
+        if [ "$(dpkg-query -W -f='${Status}\n' "${package}" 2>&1 | cut -d" " -f1)" != "install" ]; then
             log "INFO" "${package} is not installed, try to install it"
             run_with_sudo_if_required apt-get install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
@@ -248,7 +249,7 @@ install_package () {
     fi
     if command -v dnf > /dev/null
     then
-        if (is_url "${package}") || (dnf list --available -q ${package} &> /dev/null) || ! (dnf list --installed -q ${package} &> /dev/null) ; then
+        if (is_url "${package}") || (dnf list --available -q ${package} > /dev/null 2>&1) || ! (dnf list --installed -q ${package} > /dev/null 2>&1) ; then
             log "INFO" "${package} is not installed, try to install it"
             run_with_sudo_if_required dnf install -y --best --allowerasing ${parameter} ${package}
             if [ $? -eq 0 ]; then
@@ -265,7 +266,7 @@ install_package () {
     fi
     if command -v yum > /dev/null
     then
-        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available &> /dev/null) || ! (yum list -q ${package} 2> /dev/null | grep -i installed &> /dev/null) ; then
+        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available > /dev/null 2>&1) || ! (yum list -q ${package} 2> /dev/null | grep -i installed > /dev/null 2>&1) ; then
             log "INFO" "${package} is not installed, try to install it"
             run_with_sudo_if_required yum install -y --best --allowerasing ${parameter} ${package}
             if [ $? -eq 0 ]; then
@@ -282,7 +283,7 @@ install_package () {
     fi
     if command -v pacman > /dev/null
     then
-        if ! (pacman -Qi ${package} &> /dev/null) ; then
+        if ! (pacman -Qi ${package} > /dev/null 2>&1) ; then
             log "INFO" "${package} is not installed, try to install it"
             run_with_sudo_if_required pacman -S --noconfirm ${parameter} ${package} 
             if [ $? -eq 0 ]; then

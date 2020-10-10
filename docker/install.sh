@@ -13,4 +13,6 @@ function ensure_binfiles_are_linked () {
 
 if command -v docker &> /dev/null ; then
     ensure_binfiles_are_linked
+else
+    log "INFO" "Skipping Docker configuration, because docker command is missing"
 fi

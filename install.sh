@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 set -e
-SCRIPT_DIR=$(dirname $0)
-. ${SCRIPT_DIR}/function.log.sh
-INSTALL_PACKAGE_BIN=${SCRIPT_DIR}/tool.install-package.sh
+SCRIPT_DIR="$(dirname $0)"
+ROOT_DIR="$(readlink -f ${SCRIPT_DIR})"
+. ${ROOT_DIR}/function.log.sh
+INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 
 ensure_package_database_is_updated () {
     ${INSTALL_PACKAGE_BIN} --update
@@ -25,9 +26,9 @@ ensure_additional_tools_are_installed () {
 }
 
 ensure_dotfile_tools_are_installed () {
-    for tool in $(find ${SCRIPT_DIR} -regextype posix-extended -regex "^${SCRIPT_DIR}/[^_.][^/]*/install\.sh"); do
+    for tool in $(find ${ROOT_DIR} -regextype posix-extended -regex "^${ROOT_DIR}/[^_.][^/]*/install\.sh"); do
         log "INFO" "Installing ${tool}"
-        ./${tool}
+        ${tool}
     done
 }
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
-SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
-ROOT_DIR=${SCRIPT_DIR}
+SCRIPT_DIR="$(dirname ${BASH_SOURCE[0]})"
+ROOT_DIR="$(readlink -f ${SCRIPT_DIR})"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
 

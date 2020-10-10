@@ -7,10 +7,6 @@ source ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
-function ensure_git_is_installed () {
-    ${INSTALL_PACKAGE_BIN} --install git
-}
-
 function userSigningKey () {
     gpg --with-colons -k "$(git config user.email)" 2>/dev/null | grep ":s:" | cut -d':' -f5
 }
@@ -88,6 +84,9 @@ function ensure_dotfiles_are_linked () {
 	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
 }
 
-ensure_git_is_installed
-ensure_git_is_configured
-ensure_dotfiles_are_linked
+if command -v git &> /dev/null ; then
+    ensure_git_is_configured
+    ensure_dotfiles_are_linked
+else
+    log "INFO" "Skipping Git configuration, because git command is missing"
+fi
