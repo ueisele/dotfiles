@@ -18,7 +18,7 @@ LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 function ensure_zsh_requirements_are_installed () {
     ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user,alpine=shadow"
     if [ "$(current_os)" = "alpine" ]; then
-        printf "#%%PAM-1.0\\nauth       sufficient   pam_shells.so" | $(sudo_if_required) tee -a /etc/pam.d/chsh 
+        printf "#%%PAM-1.0\\nauth       sufficient   pam_shells.so" | run_with_sudo_if_required tee -a /etc/pam.d/chsh 
     fi
 }
 

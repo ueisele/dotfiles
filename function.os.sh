@@ -6,29 +6,20 @@ _log () {
     echo "$(date -Isec)|${level}|${msg}"
 }
 
-sudo_if_required () {
-    local alternative_action=${1:-"skip"}
-    local run_prefix=""
+run_with_sudo_if_required () {
     if [ "$(id -u)" -ne 0 ]; then
         if ! command -v sudo > /dev/null ; then
-            # sudo is not installed"
-            if [ "${alternative_action}" = "abort" ]; then
-                run_prefix="$(log "ERROR" "Aboring execution, because sudo is not installed!"); exit 1; "
-            else
-                run_prefix="$(log "WARN" "Skipping command, because sudo is not installed!") || "
-            fi  
+            _log "WARN" "Could not execute command, because sudo is not installed: $(echo "$@")"
+            return 1
         elif ! sudo -v > /dev/null ; then
-            # sudo access is not allowed"
-            if [ "${alternative_action}" = "abort" ]; then
-                run_prefix="$(log "ERROR" "Aboring execution, because sudo access is not allowed!"); exit 1; "
-            else
-                run_prefix="$(log "WARN" "Skipping command, because sudo access is not allowed!") || "
-            fi  
+            _log "WARN" "Could not execute command, because sudo access is not allowed: $(echo "$@")"
+            return 1
         else
-            run_prefix="sudo "
+            eval "sudo $@"
         fi
+    else
+        eval "$@"
     fi
-    echo ${run_prefix}
 }
 
 current_os () {

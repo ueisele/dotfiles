@@ -99,68 +99,66 @@ parseCmd () {
 }
 
 update () {
-    local run="$(sudo_if_required)"
     if command -v apt-get > /dev/null
     then
         export DEBIAN_FRONTEND=noninteractive
-        ${run} apt-get update
+        run_with_sudo_if_required apt-get update
         log "INFO" "Successfully updated package database with apt"
         export DEBIAN_FRONTEND=interactive
         return        
     fi
     if command -v dnf > /dev/null
     then
-        ${run} dnf check-update
+        run_with_sudo_if_required dnf check-update
         log "INFO" "Successfully updated package database with dnf"
         return        
     fi
     if command -v yum > /dev/null
     then
-        ${run} yum check-update
+        run_with_sudo_if_required yum check-update
         log "INFO" "Successfully updated package database with yum"
         return        
     fi
     if command -v pacman > /dev/null
     then
-        ${run} pacman -Syy --noconfirm 
+        run_with_sudo_if_required pacman -Syy --noconfirm 
         log "INFO" "Successfully updated package database with pacman"
         return        
     fi
     if command -v apk > /dev/null
     then
-        ${run} apk update
+        run_with_sudo_if_required apk update
         log "INFO" "Successfully updated package database with apk"
         return        
     fi
 
-    fail 1 "Could not update package database with apt, dnf, yum, pacman or apk!" 
+    log "WARN" "Could not update package database with apt, dnf, yum, pacman or apk!" 
 }
 
 clean () {
-    local run="$(sudo_if_required)"
     if command -v apt-get > /dev/null
     then
         export DEBIAN_FRONTEND=noninteractive
-        ${run} apt-get clean -y
+        run_with_sudo_if_required apt-get clean -y
         log "INFO" "Successfully cleaned package cache with apt"
         export DEBIAN_FRONTEND=interactive
         return        
     fi
     if command -v dnf > /dev/null
     then
-        ${run} dnf clean all -y
+        run_with_sudo_if_required dnf clean all -y
         log "INFO" "Successfully cleaned package cache with dnf"
         return        
     fi
     if command -v yum > /dev/null
     then
-        ${run} yum clean all -y
+        run_with_sudo_if_required yum clean all -y
         log "INFO" "Successfully cleaned package cache with yum"
         return        
     fi
     if command -v pacman > /dev/null
     then
-        ${run} pacman -Sc --noconfirm 
+        run_with_sudo_if_required pacman -Sc --noconfirm 
         log "INFO" "Successfully cleaned package cache with pacman"
         return        
     fi
@@ -170,7 +168,7 @@ clean () {
         return        
     fi
 
-    fail 1 "Could not clean package cache with apt, dnf, yum, pacman or apk!" 
+    log "WARN" "Could not clean package cache with apt, dnf, yum, pacman or apk!" 
 }
 
 install_packages () {
@@ -231,13 +229,12 @@ resolve_install_paramerer () {
 install_package () {
     local package="${1:?'Missing package as first parameter!'}"
     local parameter="${2:-""}"  
-    local run="$(sudo_if_required)"
     if command -v apt-get > /dev/null
     then
         export DEBIAN_FRONTEND=noninteractive
-        if ! (dpkg-query --list ${package} 2>&1 > /dev/null) ; then
+        if ! (dpkg-query --list ${package} &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} apt-get install -y ${parameter} ${package}
+            run_with_sudo_if_required apt-get install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with apt"
             else
@@ -251,9 +248,9 @@ install_package () {
     fi
     if command -v dnf > /dev/null
     then
-        if (is_url "${package}") || (dnf list --available -q ${package} 2>&1 &> /dev/null) || ! (dnf list --installed -q ${package} 2>&1 &> /dev/null) ; then
+        if (is_url "${package}") || (dnf list --available -q ${package} &> /dev/null) || ! (dnf list --installed -q ${package} &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} dnf install -y --best --allowerasing ${parameter} ${package}
+            run_with_sudo_if_required dnf install -y --best --allowerasing ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with dnf"
             elif (is_url "${package}") ; then
@@ -268,9 +265,9 @@ install_package () {
     fi
     if command -v yum > /dev/null
     then
-        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available 2>&1 > /dev/null) || ! (yum list -q ${package} 2> /dev/null | grep -i installed 2>&1 > /dev/null) ; then
+        if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available &> /dev/null) || ! (yum list -q ${package} 2> /dev/null | grep -i installed &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} yum install -y --best --allowerasing ${parameter} ${package} && ${run} yum clean all
+            run_with_sudo_if_required yum install -y --best --allowerasing ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with yum"
             elif (is_url "${package}") ; then
@@ -285,9 +282,9 @@ install_package () {
     fi
     if command -v pacman > /dev/null
     then
-        if ! (pacman -Qi ${package} 2>&1 > /dev/null) ; then
+        if ! (pacman -Qi ${package} &> /dev/null) ; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} pacman -S --noconfirm ${parameter} ${package} 
+            run_with_sudo_if_required pacman -S --noconfirm ${parameter} ${package} 
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with pacman"
             else
@@ -302,7 +299,7 @@ install_package () {
     then
         if [ -z "$(apk list -I ${package})" ]; then
             log "INFO" "${package} is not installed, try to install it"
-            ${run} apk add ${parameter} ${package}
+            run_with_sudo_if_required apk add ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with apk"
             else
