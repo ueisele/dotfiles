@@ -66,7 +66,7 @@ function download_and_install_neovim () {
         local tmpdir="$(mktemp -d)"
 		curl -sfLR -o "${tmpdir}/nvim.appimage" "${download_url}"
 		chmod +x "${tmpdir}/nvim.appimage"
-		(cd ${tmpdir} && ./nvim.appimage --appimage-extract)
+		(cd ${tmpdir} && ./nvim.appimage --appimage-extract > /dev/null)
 		chown -R $(id -u):$(id -g) "${tmpdir}"
 		chmod -R a+rX "${tmpdir}"
 		mv -f "${tmpdir}/squashfs-root" "${target}/${filename_full}"

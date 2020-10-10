@@ -1,4 +1,4 @@
-if ! command -v docker; then
+if ! command -v docker &> /dev/null ; then
     return
 fi
 

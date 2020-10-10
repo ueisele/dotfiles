@@ -74,9 +74,9 @@ fi
 #
 # Load custom zshenv from ~/.zsh/zshenv.d
 #
-if [[ -d ${HOME}/.zsh/zshenv.d/ ]]; then
-	for zshenv in ${HOME}/.zsh/zshenv.d/*.zsh; do
-		test -r "$zshenv" && source "$zshenv"
+if [[ -d \${HOME}/.zsh/zshenv.d/ ]]; then
+	for zshenv in \${HOME}/.zsh/zshenv.d/*.zsh; do
+		test -r "\$zshenv" && source "\$zshenv"
 	done
 	unset zshenv
 fi
