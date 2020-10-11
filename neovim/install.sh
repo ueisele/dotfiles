@@ -83,7 +83,7 @@ function ensure_neovim_is_installed () {
 	if [ "$(current_os)" != "alpine" ]; then
 		download_and_install_neovim "$@"
 	else
-		${INSTALL_PACKAGE_BIN} --install neovim
+		${INSTALL_PACKAGE_BIN} --install neovim "alpine=neovim-doc"
 	fi
 }
 

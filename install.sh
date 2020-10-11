@@ -14,23 +14,23 @@ ensure_required_tools_are_installed () {
     ${INSTALL_PACKAGE_BIN} --install \
         "centos(==6)=http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm" \
         "centos(==7)=https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.8-1.x86_64.rpm" \
-        git
+        git "alpine=git-doc"
     ${INSTALL_PACKAGE_BIN} --install \
-        bash curl tar unzip findutils \
-        "arch=inetutils,manjaro=inetutils,alpine=net-tools,hostname" \
-        "alpine=coreutils" "alpine=util-linux"
+        bash "alpine=bash-doc" curl "alpine=curl-doc" tar "alpine=tar-doc" unzip "alpine=unzip-doc" findutils "alpine=findutils-doc" \
+        "arch=inetutils,manjaro=inetutils,alpine=net-tools,hostname" "alpine=net-tools-doc" \
+        "alpine=coreutils" "alpine=coreutils-doc" "alpine=util-linux" "alpine=util-linux-doc"
 }
 
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
     ${INSTALL_PACKAGE_BIN} --install \
-        wget less \
-        "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg" \
-        "debian=exuberant-ctags,ubuntu=exuberant-ctags,ctags"
-    ${INSTALL_PACKAGE_BIN} --install "centos=epel-release" htop
+        wget "alpine=wget-doc" less "alpine=less-doc" \
+        "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg" "alpine=gnupg-doc" \
+        "debian=exuberant-ctags,ubuntu=exuberant-ctags,ctags" "alpine=ctags-doc"
+    ${INSTALL_PACKAGE_BIN} --install "centos=epel-release" htop "alpine=htop-doc"
     ${INSTALL_PACKAGE_BIN} \
         --install-parameter "centos(>=8)=--enablerepo=epel-testing" \
-        --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher"
+        --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher" "alpine=the_silver_searcher-doc"
 }
 
 ensure_dotfile_tools_are_installed () {

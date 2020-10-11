@@ -11,7 +11,7 @@ LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_zsh_requirements_are_installed () {
     log "INFO" "Installing chsh tool for changing user shell"
-    ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user,alpine=shadow"
+    ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user,alpine=shadow" "alpine=shadow-doc"
     if [ "$(current_os)" = "alpine" ] && [ ! -e /etc/pam.d/chsh ]; then
         log "INFO" "Allow passwordless change of user shell, by creating corresponding /etc/pam.d/chsh"
         printf "#%%PAM-1.0\\nauth       sufficient   pam_shells.so" | run_with_sudo_if_required tee -a /etc/pam.d/chsh
@@ -24,7 +24,7 @@ function ensure_zsh_is_installed () {
         "centos(==7)=https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm"
     ${INSTALL_PACKAGE_BIN} \
         --install-parameter "centos(==7)=--enablerepo=gf-plus" \
-        --install zsh
+        --install zsh "alpine=zsh-doc"
 }
 
 function ensure_prezto_installed () {

@@ -8,7 +8,7 @@ INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 
 function ensure_tzdata_is_installed () {
 	log "INFO" "Install timezone package tzdata"
-    ${INSTALL_PACKAGE_BIN} --install tzdata
+    ${INSTALL_PACKAGE_BIN} --install tzdata "alpine=tzdata-doc"
 }
 
 function ensure_timezone_is_europe_berlin () {
