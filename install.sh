@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 set -e
-SCRIPT_DIR="$(dirname $0)"
+SCRIPT_DIR="$(readlink -f $(dirname $0))"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR})"
 . ${ROOT_DIR}/function.log.sh
 INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
@@ -15,14 +15,22 @@ ensure_required_tools_are_installed () {
         "centos(==6)=http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm" \
         "centos(==7)=https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.8-1.x86_64.rpm" \
         git
-    ${INSTALL_PACKAGE_BIN} --install bash curl tar unzip findutils "arch=inetutils,manjaro=inetutils,alpine=net-tools,hostname" "alpine=coreutils"
+    ${INSTALL_PACKAGE_BIN} --install \
+        bash curl tar unzip findutils \
+        "arch=inetutils,manjaro=inetutils,alpine=net-tools,hostname" \
+        "alpine=coreutils" "alpine=util-linux"
 }
 
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
-    ${INSTALL_PACKAGE_BIN} --install wget less "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg"
+    ${INSTALL_PACKAGE_BIN} --install \
+        wget less \
+        "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg" \
+        "debian=exuberant-ctags,ubuntu=exuberant-ctags,ctags"
     ${INSTALL_PACKAGE_BIN} --install "centos=epel-release" htop
-    ${INSTALL_PACKAGE_BIN} --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher" --install-parameter "centos(>=8)=--enablerepo=epel-testing"
+    ${INSTALL_PACKAGE_BIN} \
+        --install-parameter "centos(>=8)=--enablerepo=epel-testing" \
+        --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher"
 }
 
 ensure_dotfile_tools_are_installed () {

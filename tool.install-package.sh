@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-SCRIPT_DIR="$(dirname $0)"
+SCRIPT_DIR="$(readlink -f $(dirname $0))"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR})"
 . ${ROOT_DIR}/function.log.sh
 . ${ROOT_DIR}/function.os.sh

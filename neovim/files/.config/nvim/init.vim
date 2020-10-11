@@ -49,6 +49,8 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
+Plug 'lambdalisue/suda.vim'
+
 "*****************************************************************************
 
 "" Include user's extra bundle
@@ -294,7 +296,7 @@ vnoremap K :m '<-2<CR>gv=gv
 nnoremap <Leader>o :.Gbrowse<CR>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo.
-cmap w!! w !sudo tee > /dev/null %
+let g:suda_smart_edit = 1
 
 "" NERDTree configuration
 map <C-n> :NERDTreeToggle<CR>
