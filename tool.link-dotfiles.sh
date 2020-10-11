@@ -26,7 +26,7 @@ function link_dotfile () {
     elif [ -h "${targetdir}/${relfile}" ]; then
         rm -f "${targetdir}/${relfile}"
     fi
-    log "INFO" "Creating  ${targetdir}/${relfile} as symlink, pointing to $(realpath ${file})"
+    log "INFO" "Creating ${targetdir}/${relfile} as symlink, pointing to $(realpath ${file})"
     ln -sr "$(realpath ${file})" "${targetdir}/${relfile}"
 }
 
