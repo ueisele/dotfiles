@@ -1,5 +1,15 @@
 # dotfiles (wip)
 
+ToDo:
+
+* `whereis` needs to be installed
+* `nvim` `Shougo/deoplete.nvim` does not work
+* `nvim` syntax check seems only to be working in codespaces example docker container
+* `gh` cli needs to be installed (https://github.com/cli/cli/releases/tag/v1.1.0)
+* `GITHUB_TOKEN` with more access rights for `gh` usage (github.com: missing required scope 'repo';missing required scope 'read:org')
+* `chsh` call maybe not necassery, because devcontainer shell must be specified by config of vscode
+* `gpg` must be tested, git commit should be able to sign
+
 ## see
 
 * https://medium.com/@ivanaugustobd/your-terminal-can-be-much-much-more-productive-5256424658e8

@@ -2,8 +2,8 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Check python version if available
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("python")
-    python import pynvim; from sys import version_info as v; pynvim.command('let python_version=%d' % (v[0] * 100 + v[1]))
+if has("python3")
+    python3 import vim; from sys import version_info as v; vim.command('let python_version=%d' % (v[0] * 10000 + v[1] * 100 + v[2]))
 else
     let python_version=0
 endif
@@ -63,7 +63,7 @@ if v:version >= 703
   Plug 'Shougo/deol.nvim'
 endif
 
-if python_version >= 361
+if python_version >= 30601
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 endif
 
