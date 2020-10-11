@@ -22,17 +22,17 @@ EOF
 		fi
 	elif [ "$(current_os)" = "fedora" ] || [ "$(current_os)" = "centos" ]; then
 		if grep "^tsflags=nodocs" /etc/dnf/dnf.conf > /dev/null 2>&1; then
-			log "INFO" "Reinstalling everything with man pages"
+			log "INFO" "Reinstalling everything with man pages (dnf)"
 			run_with_sudo_if_required sed -i 's/\(^tsflags=nodocs\)/#\1/g' /etc/dnf/dnf.conf
-			run_with_sudo_if_required dnf reinstall -y \*
+			run_with_sudo_if_required dnf reinstall -y "\*"
 		elif grep "^tsflags=nodocs" /etc/yum.conf > /dev/null 2>&1; then
-			log "INFO" "Reinstalling everything with man pages"
+			log "INFO" "Reinstalling everything with man pages (yum)"
 			run_with_sudo_if_required sed -i 's/\(^tsflags=nodocs\)/#\1/g' /etc/yum.conf
-			run_with_sudo_if_required yum reinstall -y \*
+			run_with_sudo_if_required yum reinstall -y "\*"
 		fi
 	elif [ "$(current_os)" = "archlinux" ] || [ "$(current_os)" = "manjaro" ]; then
 		if grep "^NoExtract *= *usr/share/man/\*" /etc/pacman.conf > /dev/null 2>&1; then
-			log "INFO" "Reinstalling everything with man pages"
+			log "INFO" "Reinstalling everything with man pages (pacman)"
 			run_with_sudo_if_required sed -i 's/\(^NoExtract *= *usr\/share\/man\/*\)/#\1/g' /etc/pacman.conf
 			pacman -Qqn | run_with_sudo_if_required pacman -S --noconfirm -
 		fi
