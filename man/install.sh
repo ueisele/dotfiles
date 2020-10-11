@@ -15,7 +15,10 @@ function ensure_man_pages_are_installed () {
 	if [ "$(current_os)" = "ubuntu" ]; then
 		if command -v unminimize &> /dev/null; then
 			log "INFO" "Unminimizing system and installing man pages"
-			run_with_sudo_if_required unminimize
+			run_with_sudo_if_required unminimize << 'EOF'
+y
+y
+EOF
 		fi
 	elif [ "$(current_os)" = "fedora" ] || [ "$(current_os)" = "centos" ]; then
 		if grep "^tsflags=nodocs" /etc/dnf/dnf.conf > /dev/null 2>&1; then
