@@ -87,14 +87,6 @@ function ensure_neovim_is_installed () {
 	fi
 }
 
-function ensure_neovim_requirements_are_installed () {
-	${INSTALL_PACKAGE_BIN} --install \
-		git make gcc python3 \
-		"arch=python-pip,manjaro=python-pip,alpine=py3-pip,python3-pip" \
-		"alpine=python3-dev" "alpine=musl-dev"
-	pip3 install --user --upgrade pynvim
-}
-
 function ensure_dotfiles_are_linked () {
 	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
 }
@@ -113,7 +105,6 @@ function link_aliases () {
 }
 
 ensure_neovim_is_installed "$@"
-ensure_neovim_requirements_are_installed
 ensure_dotfiles_are_linked
 ensure_plugins_are_installed
 link_aliases

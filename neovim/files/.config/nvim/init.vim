@@ -1,13 +1,4 @@
 "" Created with https://vim-bootstrap.com/
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Check python version if available
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("python3")
-    python3 import vim; from sys import version_info as v; vim.command('let python_version=%d' % (v[0] * 10000 + v[1] * 100 + v[2]))
-else
-    let python_version=0
-endif
-
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
@@ -28,49 +19,36 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 "*****************************************************************************
 "" Plug install packages
 "*****************************************************************************
-Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' }
-Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
-Plug 'airblade/vim-gitgutter'
+Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'vim-airline/vim-airline', { 'tag': 'v0.11' }
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/grep.vim'
-Plug 'Raimondi/delimitMate'
+
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'ryanoasis/vim-devicons'
+
+Plug 'christoomey/vim-tmux-navigator'
+
 Plug 'majutsushi/tagbar'
-Plug 'dense-analysis/ale'
-Plug 'Yggdroot/indentLine'
-Plug 'sheerun/vim-polyglot'
-Plug 'dracula/vim', {'as': 'dracula'}
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-let g:make = 'gmake'
-if exists('make')
-    let g:make = 'make'
-endif
-Plug 'Shougo/vimproc.vim', { 'do': g:make }
+Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' }
+Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
+Plug 'airblade/vim-gitgutter'
+
+Plug 'sheerun/vim-polyglot'
+Plug 'luochen1990/rainbow'
+Plug 'Yggdroot/indentLine'
+Plug 'Raimondi/delimitMate'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'scrooloose/nerdcommenter'
 
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-
-if v:version >= 703
-  Plug 'Shougo/deol.nvim'
-endif
-
-if python_version >= 30601
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-endif
-
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'luochen1990/rainbow'
-
-"*****************************************************************************
 "*****************************************************************************
 
 "" Include user's extra bundle
@@ -96,11 +74,23 @@ set binary
 "" Fix backspace indent
 set backspace=indent,eol,start
 
+"" File formats
+set fileformats=unix,dos,mac
+
+"" File handling
+set autoread
+
 "" Tabs. May be overriten by autocmd rules
-set tabstop=4
+set tabstop=2
 set softtabstop=0
-set shiftwidth=4
+set shiftwidth=2
 set expandtab
+set smarttab
+set autoindent
+
+"" Buffer completion (CTRL-P / CTRL-N)
+set complete-=i
+set showmatch
 
 "" Map leader to ,
 let mapleader=','
@@ -119,20 +109,17 @@ set nobackup
 set nowritebackup
 set noswapfile
 
-set fileformats=unix,dos,mac
-set showcmd
-
-if exists('$SHELL')
-    set shell=$SHELL
-else
-    set shell=/bin/sh
-endif
-
 " session management
 let g:session_directory = "~/.config/nvim/session"
 let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
+
+"" Remember cursor position
+augroup vimrc-remember-cursor-position
+  autocmd!
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+augroup END
 
 "*****************************************************************************
 "" Visual Settings
@@ -140,6 +127,7 @@ let g:session_command_aliases = 1
 syntax on
 set ruler
 set number
+set showcmd
 
 let no_buffers_menu=1
 if exists('+termguicolors')
@@ -176,27 +164,18 @@ syntax sync minlines=256
 set synmaxcol=300
 set re=1
 
-"" Status bar
-set laststatus=2
-
 "" Use modeline overrides
 set modeline
 set modelines=10
-
-set title
-set titleold="Terminal"
-set titlestring=%F
-
-set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
-
-if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
-endif
 
 " Search mappings: These will make it so that going to the next one in a
 " search will center on the line it's found in.
 nnoremap n nzzzv
 nnoremap N Nzzzv
+
+"" open help vertically
+command! -nargs=* -complete=help Help vertical belowright help <args>
+autocmd FileType help wincmd L
 
 " vim-airline
 let g:airline_theme = 'dracula'
@@ -207,10 +186,30 @@ let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
 let g:airline_skip_empty_sections = 1
 
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline_left_sep          = '▶'
+let g:airline_left_alt_sep      = '»'
+let g:airline_right_sep         = '◀'
+let g:airline_right_alt_sep     = '«'
+let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
+let g:airline#extensions#readonly#symbol   = '⊘'
+let g:airline#extensions#linecolumn#prefix = '¶'
+let g:airline#extensions#paste#symbol      = 'ρ'
+let g:airline_symbols.linenr    = '␊'
+let g:airline_symbols.branch    = '⎇'
+let g:airline_symbols.paste     = 'ρ'
+let g:airline_symbols.paste     = 'Þ'
+let g:airline_symbols.paste     = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
 "*****************************************************************************
 "" Abbreviations
 "*****************************************************************************
-"" no one is really happy until you have this shortcuts
 cnoreabbrev W! w!
 cnoreabbrev Q! q!
 cnoreabbrev Qall! qall!
@@ -221,78 +220,6 @@ cnoreabbrev WQ wq
 cnoreabbrev W w
 cnoreabbrev Q q
 cnoreabbrev Qall qall
-
-"" NERDTree configuration
-let g:NERDTreeChDirMode=2
-let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
-let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let g:NERDTreeShowBookmarks=1
-let g:nerdtree_tabs_focus_on_files=1
-let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeWinSize = 50
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
-nnoremap <silent> <F2> :NERDTreeFind<CR>
-noremap <F3> :NERDTreeToggle<CR>
-
-"" set shortcut for open Nerdtree
-map <C-n> :NERDTreeToggle<CR>
-
-"" Make Nerdtree show .files by default
-let NERDTreeShowHidden=1
-
-" grep.vim
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
-
-" terminal emulation
-nnoremap <silent> <leader>sh :terminal<CR>
-
-"*****************************************************************************
-"" Functions
-"*****************************************************************************
-if !exists('*s:setupWrapping')
-  function s:setupWrapping()
-    set wrap
-    set wm=2
-    set textwidth=79
-  endfunction
-endif
-
-"*****************************************************************************
-"" Autocmd Rules
-"*****************************************************************************
-"" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-augroup vimrc-sync-fromstart
-  autocmd!
-  autocmd BufEnter * :syntax sync maxlines=200
-augroup END
-
-"" Remember cursor position
-augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-augroup END
-
-"" txt
-augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
-augroup END
-
-"" make/cmake
-augroup vimrc-make-cmake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
-augroup END
-
-set autoread
-
-"" open help vertically
-command! -nargs=* -complete=help Help vertical belowright help <args>
-autocmd FileType help wincmd L
 
 "*****************************************************************************
 "" Mappings
@@ -322,33 +249,11 @@ nnoremap <Tab> gt
 nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
 
-"" Set working directory
-nnoremap <leader>. :lcd %:p:h<CR>
-
 "" Opens an edit command with the path of the currently edited file filled in
 noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-"" fzf.vim
-set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
-nmap <C-o> :FZF -m<CR>
-nmap <C-s> :Ag<CR>
-
-" snippets
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-let g:UltiSnipsEditSplit="vertical"
-
-" ale
-let g:ale_linters = {}
-
-" Tagbar
-nmap <silent> <F4> :TagbarToggle<CR>
-let g:tagbar_autofocus = 1
 
 " Disable visualbell
 set noerrorbells visualbell t_vb=
@@ -365,12 +270,6 @@ noremap YY "+y<CR>
 noremap <leader>p "+gP<CR>
 noremap XX "+x<CR>
 
-if has('macunix')
-  " pbcopy for OSX copy/paste
-  vmap <C-x> :!pbcopy<CR>
-  vmap <C-c> :w !pbcopy<CR><CR>
-endif
-
 "" Buffer nav
 noremap <leader>z :bp<CR>
 noremap <leader>q :bp<CR>
@@ -382,12 +281,6 @@ noremap <leader>c :bd<CR>
 
 "" Clean search (highlight)
 nnoremap <silent> <leader><space> :noh<cr>
-
-"" Switching windows
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-noremap <C-h> <C-w>h
 
 "" Vmap for maintain Visual Mode after shifting > and <
 vmap < <gv
@@ -403,11 +296,24 @@ nnoremap <Leader>o :.Gbrowse<CR>
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 cmap w!! w !sudo tee > /dev/null %
 
-"*****************************************************************************
-"" Custom configs
-"*****************************************************************************
-"" deoplete.nvim
-let g:deoplete#enable_at_startup = 1
+"" NERDTree configuration
+map <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeChDirMode=2
+let g:NERDTreeIgnore=['\.git','\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__','^node_modules$']
+let NERDTreeShowHidden=1
+let g:NERDTreeGitStatusWithFlags = 1
+
+"" NERDCommenter configuration
+vmap <C-c> <plug>NERDCommenterToggle
+nmap <C-c> <plug>NERDCommenterToggle
+
+"" fzf.vim
+nmap <C-o> :FZF -m<CR>
+nmap <C-s> :Ag<CR>
+
+" Tagbar
+nmap <silent> <F4> :TagbarToggle<CR>
+let g:tagbar_autofocus = 1
 
 "" vim-better-whitespace
 " auto strip whitespace except for file with extention blacklisted
@@ -419,7 +325,6 @@ let g:rainbow_active = 1
 " vim:ts=2:sw=2:et
 
 "*****************************************************************************
-"*****************************************************************************
 
 "" Include user's local vim config
 if filereadable(expand("~/.config/nvimrc.local"))
@@ -427,61 +332,8 @@ if filereadable(expand("~/.config/nvimrc.local"))
 endif
 
 "*****************************************************************************
-"" Convenience variables
+"" File Type settings 			  
 "*****************************************************************************
-
-" vim-airline
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-if !exists('g:airline_powerline_fonts')
-  let g:airline#extensions#tabline#left_sep = ' '
-  let g:airline#extensions#tabline#left_alt_sep = '|'
-  let g:airline_left_sep          = '▶'
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
-  let g:airline_right_alt_sep     = '«'
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-  let g:airline#extensions#readonly#symbol   = '⊘'
-  let g:airline#extensions#linecolumn#prefix = '¶'
-  let g:airline#extensions#paste#symbol      = 'ρ'
-  let g:airline_symbols.linenr    = '␊'
-  let g:airline_symbols.branch    = '⎇'
-  let g:airline_symbols.paste     = 'ρ'
-  let g:airline_symbols.paste     = 'Þ'
-  let g:airline_symbols.paste     = '∥'
-  let g:airline_symbols.whitespace = 'Ξ'
-else
-  let g:airline#extensions#tabline#left_sep = ''
-  let g:airline#extensions#tabline#left_alt_sep = ''
-
-  " powerline symbols
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-  let g:airline_symbols.branch = ''
-  let g:airline_symbols.readonly = ''
-  let g:airline_symbols.linenr = ''
-endif
-
-"" set default identation
-set et
-set tabstop=2
-set shiftwidth=2
-set expandtab
-set laststatus=2
-
-set autoindent
-set complete-=i
-set showmatch
-set smarttab
-
-" ----------------------------------------- "
-" File Type settings 			    	          	"
-" ----------------------------------------- "
-
 au BufNewFile,BufRead *.vim setlocal noet ts=4 sw=4 sts=4
 au BufNewFile,BufRead *.txt setlocal noet ts=4 sw=4
 au BufNewFile,BufRead *.md setlocal spell noet ts=4 sw=4
@@ -521,13 +373,18 @@ autocmd BufNewFile,BufRead *.py setlocal tabstop=4 softtabstop=4 shiftwidth=4 te
 " toml settings
 au BufRead,BufNewFile MAINTAINERS set ft=toml
 
+" make/cmake
+autocmd FileType make setlocal noexpandtab
+autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+
 " spell check for git commits
 autocmd FileType gitcommit setlocal spell
 
 " Wildmenu completion {{{
 set wildmenu
+set wildmode=list:longest,list:full
 " set wildmode=list:longest
-set wildmode=list:full
+"set wildmode=list:full
 
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
