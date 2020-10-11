@@ -268,7 +268,7 @@ install_package () {
     then
         if (is_url "${package}") || (yum list -q ${package} 2> /dev/null | grep -i available > /dev/null 2>&1) || ! (yum list -q ${package} 2> /dev/null | grep -i installed > /dev/null 2>&1) ; then
             log "INFO" "${package} is not installed, try to install it"
-            run_with_sudo_if_required yum install -y --best --allowerasing ${parameter} ${package}
+            run_with_sudo_if_required yum install -y ${parameter} ${package}
             if [ $? -eq 0 ]; then
                 log "INFO" "Successfully installed ${package} with yum"
             elif (is_url "${package}") ; then
