@@ -10,4 +10,5 @@ export DOTFILES_APP_DIR="${DOTFILES_STORE_DIR}/opt"
 export DOTFILES_SHARE_DIR="${DOTFILES_STORE_DIR}/share"
 export DOTFILES_MAN_DIR="${DOTFILES_SHARE_DIR}/man"
 
+export INSTALL_PACKAGE_BIN="${DOTFILES_DIR}/tool.install-package.sh"
 export LINK_DOTFILES_BIN="${DOTFILES_DIR}/tool.link-dotfiles.sh"
