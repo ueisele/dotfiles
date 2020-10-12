@@ -18,7 +18,7 @@ function resolve_arch_type () {
 }
 
 function resolve_libc_type () { 
-    if (ldd --version | grep -q -i musl); then echo musl; else echo gnu; fi
+    if (ldd $(command -v sh) | grep -q -i musl); then echo musl; else echo gnu; fi
 }
 
 function resolve_download_url () {
