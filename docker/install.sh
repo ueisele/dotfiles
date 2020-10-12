@@ -4,10 +4,10 @@ SCRIPT_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
-LINK_DOTFILES_BIN="${ROOT_DIR}/tool.link-dotfiles.sh"
 
 function ensure_binfiles_are_linked () {
     log "INFO" "Linking Docker bin files to ${DOTFILES_BIN_DIR}"
+    mkdir -p "${DOTFILES_BIN_DIR}"
 	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/bin" "${DOTFILES_BIN_DIR}"
 }
 
