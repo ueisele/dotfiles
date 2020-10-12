@@ -13,3 +13,10 @@ if [ -d  "${DOTFILES_ALIASES_DIR}" ]; then
     source "$file"
   done
 fi
+
+# Source key-bindings files.
+if [ -d  "${DOTFILES_KEYBINDINGS_ZSH_DIR}" ]; then
+  for file in ${DOTFILES_KEYBINDINGS_ZSH_DIR}/*; do 
+    source "$file"
+  done
+fi

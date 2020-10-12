@@ -42,6 +42,10 @@ function ensure_downloaded_and_installed_from_github () {
         download_github_raw_content "${GITHUB_REPO_SUPPLEMENT}" "${actual_tag}" "man/man1" "${DOTFILES_APP_DIR}/${name_full}/man" "${name_short}.1"
         download_github_raw_content "${GITHUB_REPO_SUPPLEMENT}" "${actual_tag}" "man/man1" "${DOTFILES_APP_DIR}/${name_full}/man" "${name_short}-tmux.1"
 
+        log "INFO" "Download Zsh Key-Bindings for tag ${actual_tag}"
+        mkdir -p "${DOTFILES_APP_DIR}/${name_full}"
+        download_github_raw_content "${GITHUB_REPO_SUPPLEMENT}" "${actual_tag}" "shell" "${DOTFILES_APP_DIR}/${name_full}" "key-bindings.zsh"
+
         echo "$(date -Isec)" > "${DOTFILES_APP_DIR}/${name_full}/download.timestamp"
     fi
 
@@ -51,9 +55,13 @@ function ensure_downloaded_and_installed_from_github () {
     log "INFO" "Linked binaries from ${DOTFILES_APP_DIR}/${name_full} to ${DOTFILES_BIN_DIR}/${name_short} and ${DOTFILES_BIN_DIR}/${name_short}-tmux"
 
     mkdir -p "${DOTFILES_MAN_DIR}/man1"
-    ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}.1" "${DOTFILES_MAN_DIR}/man1"
-    ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}-tmux.1" "${DOTFILES_MAN_DIR}/man1"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}.1" "${DOTFILES_MAN_DIR}/man1/${name_short}.1"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}-tmux.1" "${DOTFILES_MAN_DIR}/man1/${name_short}-tmux.1"
     log "INFO" "Linked man pages from ${DOTFILES_APP_DIR}/${name_full}/man to ${DOTFILES_MAN_DIR}/man1"
+
+    mkdir -p "${DOTFILES_KEYBINDINGS_ZSH_DIR}"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/key-bindings.zsh" "${DOTFILES_KEYBINDINGS_ZSH_DIR}/fzf.zsh"
+    log "INFO" "Linked Zsh Key-Bindings from ${DOTFILES_APP_DIR}/${name_full}/key-bindings.zsh to ${DOTFILES_KEYBINDINGS_ZSH_DIR}/fzf.zsh"
 }
 
 function resolve_arch_type () {
