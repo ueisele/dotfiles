@@ -69,3 +69,7 @@ compare_version () {
             ;;
     esac
 }
+
+executed_in_container () {
+    grep docker /proc/self/cgroup > /dev/null 2>&1
+}
