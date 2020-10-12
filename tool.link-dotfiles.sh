@@ -27,7 +27,7 @@ function link_dotfile () {
         rm -f "${targetdir}/${relfile}"
     fi
     log "INFO" "Creating ${targetdir}/${relfile} as symlink, pointing to $(realpath ${file})"
-    ln -sr "$(realpath ${file})" "${targetdir}/${relfile}"
+    ln -srf "$(realpath ${file})" "${targetdir}/${relfile}"
 }
 
 function _main () {

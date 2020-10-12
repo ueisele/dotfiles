@@ -8,6 +8,8 @@ source ${ROOT_DIR}/function.os.sh
 
 GITHUB_REPO="sharkdp/bat"
 
+RETRIES=3
+
 function ensure_downloaded_and_installed_from_github () {
     local tag=${1:-"latest"}
     local arch_type=${2:-$(resolve_arch_type)}
@@ -27,7 +29,7 @@ function ensure_downloaded_and_installed_from_github () {
     else
         log "INFO" "Download artifact for arch '${arch_type}' and os '${os_type}' with tag '${actual_tag}' from URL ${download_url}"
         mkdir -p "${DOTFILES_APP_DIR}/${name_full}"
-        curl -sfL "${download_url}" | tar -xz -C "${DOTFILES_APP_DIR}/${name_full}" --overwrite --strip-components=1
+        curl -sfL --retry ${RETRIES} "${download_url}" | tar -xz -C "${DOTFILES_APP_DIR}/${name_full}" --overwrite --strip-components=1
         chown -R $(id -u):$(id -g) "${DOTFILES_APP_DIR}/${name_full}"
         log "INFO" "Artifact has been downloaded to ${DOTFILES_APP_DIR}/${name_full}"
     fi
@@ -68,7 +70,7 @@ function resolve_download_url () {
 
     local query=$(if [ ${tag} == "latest" ]; then echo ${tag}; else echo "tags/${tag}"; fi)
     
-    curl $(resolve_github_credentials) -sL https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | grep ${arch_type} | grep ${os_type}
+    curl $(resolve_github_credentials) -sL --retry ${RETRIES} https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | grep ${arch_type} | grep ${os_type}
 }
 
 function resolve_actual_tag () {
@@ -76,7 +78,7 @@ function resolve_actual_tag () {
 
     local query=$(if [ ${tag} == "latest" ]; then echo ${tag}; else echo "tags/${tag}"; fi)
     
-    curl $(resolve_github_credentials) -sL https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+    curl $(resolve_github_credentials) -sL --retry ${RETRIES} https://api.github.com/repos/${GITHUB_REPO}/releases/${query} | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
 }
 
 function resolve_github_credentials () {
