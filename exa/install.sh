@@ -110,5 +110,5 @@ elif compare_version "$(current_os_version)" ">=" "3.11.0"; then
     ensure_installed_as_package
     ensure_aliases_are_linked
 else
-    log "INFO" "Skipping installation of exa,because exa is not available for Alpine < 3.11"
+    log "INFO" "Skipping installation of exa, because exa is not available for Alpine < 3.11"
 fi

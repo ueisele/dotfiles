@@ -8,7 +8,7 @@ source ${ROOT_DIR}/function.os.sh
 
 GITHUB_REPO="sharkdp/bat"
 
-function download_and_install () {
+function ensure_downloaded_and_installed_from_github () {
     local tag=${1:-"latest"}
     local arch_type=${2:-$(resolve_arch_type)}
     local os_type=${3:-$(resolve_os_type)}
@@ -85,4 +85,4 @@ function resolve_github_credentials () {
     fi
 }
 
-download_and_install "$@"
+ensure_downloaded_and_installed_from_github "$@"
