@@ -49,8 +49,8 @@ function ensure_downloaded_and_installed_from_github () {
     log "INFO" "Linked man pages from ${DOTFILES_APP_DIR}/${name_full}/share/man to ${DOTFILES_MAN_DIR}"
 
     mkdir -p "${DOTFILES_ETC_ZSH_COMPLETION_DIR}"
-    ln -srf  "${DOTFILES_APP_DIR}/${name_full}/completion.zsh" "${DOTFILES_ETC_ZSH_COMPLETION_DIR}/${name_short}.zsh"
-    log "INFO" "Linked ZSH auto completion from ${DOTFILES_APP_DIR}/${name_full}/completion.zsh to ${DOTFILES_ETC_ZSH_COMPLETION_DIR}/${name_short}.zsh"
+    ln -srf  "${DOTFILES_APP_DIR}/${name_full}/completion.zsh" "${DOTFILES_ETC_ZSH_COMPLETION_DIR}/_${name_short}"
+    log "INFO" "Linked ZSH auto completion from ${DOTFILES_APP_DIR}/${name_full}/completion.zsh to ${DOTFILES_ETC_ZSH_COMPLETION_DIR}/_${name_short}"
 }
 
 function resolve_arch_type () {
