@@ -24,7 +24,7 @@ function ensure_downloaded_and_installed_from_github () {
     local name_short="bat"
     local name_full="${name_short}-${actual_tag}"
 
-    if [ -f "${DOTFILES_APP_DIR}/${name_full}/${name_short}" ]; then
+    if [ -f "${DOTFILES_APP_DIR}/${name_full}/download.timestamp" ]; then
         log "INFO" "Artifact ${name_full} has already been downloaded."
     else
         log "INFO" "Download artifact for arch '${arch_type}' and os '${os_type}' with tag '${actual_tag}' from URL ${download_url}"
@@ -32,6 +32,8 @@ function ensure_downloaded_and_installed_from_github () {
         curl -sfL --retry ${RETRIES} "${download_url}" | tar -xz -C "${DOTFILES_APP_DIR}/${name_full}" --overwrite --strip-components=1
         chown -R $(id -u):$(id -g) "${DOTFILES_APP_DIR}/${name_full}"
         log "INFO" "Artifact has been downloaded to ${DOTFILES_APP_DIR}/${name_full}"
+
+        echo "$(date -Isec)" > "${DOTFILES_APP_DIR}/${name_full}/download.timestamp"
     fi
 
     mkdir -p "${DOTFILES_BIN_DIR}"
