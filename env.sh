@@ -13,3 +13,4 @@ export DOTFILES_MAN_DIR="${DOTFILES_SHARE_DIR}/man"
 
 export INSTALL_PACKAGE_BIN="${DOTFILES_DIR}/tool.install-package.sh"
 export LINK_DOTFILES_BIN="${DOTFILES_DIR}/tool.link-dotfiles.sh"
+export BTPL_BIN="${ROOT_DIR}/tool.btpl.sh"
