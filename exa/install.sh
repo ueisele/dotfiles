@@ -52,21 +52,23 @@ function ensure_downloaded_and_installed_from_github () {
     log "INFO" "Linked binary from ${DOTFILES_APP_DIR}/${name_full}/${name_short} to ${DOTFILES_BIN_DIR}/${name_short}"
 
     mkdir -p "${DOTFILES_MAN_DIR}/man1"
-    ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}.1" "${DOTFILES_MAN_DIR}/man1"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}.1" "${DOTFILES_MAN_DIR}/man1/${name_short}.1"
     log "INFO" "Linked man page from ${DOTFILES_APP_DIR}/${name_full}/man/${name_short}.1 to ${DOTFILES_MAN_DIR}/man1/${name_short}.1"
 
-    mkdir -p "${DOTFILES_COMPLETIONS_ZSH_DIR}"
-    ln -srf  "${DOTFILES_APP_DIR}/${name_full}/completions.zsh" "${DOTFILES_COMPLETIONS_ZSH_DIR}/_${name_short}"
-    log "INFO" "Linked ZSH auto completion from ${DOTFILES_APP_DIR}/${name_full}/completions.zsh to ${DOTFILES_COMPLETIONS_ZSH_DIR}/_${name_short}"
+    mkdir -p "${DOTFILES_ETC_ZSH_COMPLETION_DIR}"
+    ln -srf  "${DOTFILES_APP_DIR}/${name_full}/completions.zsh" "${DOTFILES_ETC_ZSH_COMPLETION_DIR}/_${name_short}"
+    log "INFO" "Linked ZSH auto completion from ${DOTFILES_APP_DIR}/${name_full}/completions.zsh to ${DOTFILES_ETC_ZSH_COMPLETION_DIR}/_${name_short}"
 }
 
 function ensure_installed_as_package () {
+    log "INFO" "Installing exa with package manager"
 	${INSTALL_PACKAGE_BIN} --install "alpine(>=3.11.0)=exa" "alpine(>=3.11.0)=exa-doc"
 }
 
 function ensure_aliases_are_linked () {
-    mkdir -p "${DOTFILES_ALIASES_DIR}"
-    ${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/aliases" "${DOTFILES_ALIASES_DIR}"
+    log "INFO" "Linking exa alias files to ${DOTFILES_ETC_ZSH_ALIAS_DIR}"
+    mkdir -p "${DOTFILES_ETC_ZSH_ALIAS_DIR}"
+    ${LINK_FILES_BIN} "${SCRIPT_DIR}/alias" "${DOTFILES_ETC_ZSH_ALIAS_DIR}"
 }
 
 function resolve_arch_type () {

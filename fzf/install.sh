@@ -59,9 +59,9 @@ function ensure_downloaded_and_installed_from_github () {
     ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}-tmux.1" "${DOTFILES_MAN_DIR}/man1/${name_short}-tmux.1"
     log "INFO" "Linked man pages from ${DOTFILES_APP_DIR}/${name_full}/man to ${DOTFILES_MAN_DIR}/man1"
 
-    mkdir -p "${DOTFILES_KEYBINDINGS_ZSH_DIR}"
-    ln -srf "${DOTFILES_APP_DIR}/${name_full}/key-bindings.zsh" "${DOTFILES_KEYBINDINGS_ZSH_DIR}/fzf.zsh"
-    log "INFO" "Linked Zsh Key-Bindings from ${DOTFILES_APP_DIR}/${name_full}/key-bindings.zsh to ${DOTFILES_KEYBINDINGS_ZSH_DIR}/fzf.zsh"
+    mkdir -p "${DOTFILES_ETC_ZSH_KEYBINDING_DIR}"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/key-bindings.zsh" "${DOTFILES_ETC_ZSH_KEYBINDING_DIR}/${name_short}.zsh"
+    log "INFO" "Linked Zsh Key-Bindings from ${DOTFILES_APP_DIR}/${name_full}/key-bindings.zsh to ${DOTFILES_ETC_ZSH_KEYBINDING_DIR}/${name_short}.zsh"
 }
 
 function resolve_arch_type () {

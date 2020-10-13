@@ -79,7 +79,7 @@ function ensure_git_is_configured () {
 
 function ensure_dotfiles_are_linked () {
     log "INFO" "Linking Git dotfiles to ${HOME}"
-	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
+	${LINK_FILES_BIN} "${SCRIPT_DIR}/files"
 }
 
 if command -v git &> /dev/null ; then

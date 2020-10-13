@@ -41,12 +41,12 @@ function ensure_downloaded_and_installed_from_github () {
     log "INFO" "Linked binary from ${DOTFILES_APP_DIR}/${name_full}/${name_short} to ${DOTFILES_BIN_DIR}/${name_short}"
 
     mkdir -p "${DOTFILES_MAN_DIR}/man1"
-    ln -srf "${DOTFILES_APP_DIR}/${name_full}/${name_short}.1" "${DOTFILES_MAN_DIR}/man1"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/${name_short}.1" "${DOTFILES_MAN_DIR}/man1/${name_short}.1"
     log "INFO" "Linked man page from ${DOTFILES_APP_DIR}/${name_full}/${name_short}.1 to ${DOTFILES_MAN_DIR}/man1/${name_short}.1"
 
-    mkdir -p "${DOTFILES_COMPLETIONS_ZSH_DIR}"
-    ln -srf  "${DOTFILES_APP_DIR}/${name_full}/autocomplete/${name_short}.zsh" "${DOTFILES_COMPLETIONS_ZSH_DIR}/_${name_short}"
-    log "INFO" "Linked ZSH auto completion from ${DOTFILES_APP_DIR}/${name_full}/autocomplete/${name_short}.zsh to ${DOTFILES_COMPLETIONS_ZSH_DIR}/_${name_short}"
+    mkdir -p "${DOTFILES_ETC_ZSH_COMPLETION_DIR}"
+    ln -srf  "${DOTFILES_APP_DIR}/${name_full}/autocomplete/${name_short}.zsh" "${DOTFILES_ETC_ZSH_COMPLETION_DIR}/_${name_short}"
+    log "INFO" "Linked ZSH auto completion from ${DOTFILES_APP_DIR}/${name_full}/autocomplete/${name_short}.zsh to ${DOTFILES_ETC_ZSH_COMPLETION_DIR}/_${name_short}"
 }
 
 function resolve_arch_type () {

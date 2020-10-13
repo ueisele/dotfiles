@@ -52,19 +52,22 @@ function ensure_downloaded_and_installed_from_github () {
     log "INFO" "Linked binary from ${DOTFILES_APP_DIR}/${name_full}/AppRun to ${DOTFILES_BIN_DIR}/${name_short}"
 
     mkdir -p "${DOTFILES_MAN_DIR}/man1"
-    ln -srf "${DOTFILES_APP_DIR}/${name_full}/usr/man/man1/${name_short}.1" "${DOTFILES_MAN_DIR}/man1"
+    ln -srf "${DOTFILES_APP_DIR}/${name_full}/usr/man/man1/${name_short}.1" "${DOTFILES_MAN_DIR}/man1/${name_short}.1"
     log "INFO" "Linked man page from ${DOTFILES_APP_DIR}/${name_full}/usr/man/man1/${name_short}.1 to ${DOTFILES_MAN_DIR}/man1/${name_short}.1"
 }
 
 function ensure_installed_as_package () {
+    log "INFO" "Installing neovim with package manager"
     ${INSTALL_PACKAGE_BIN} --install neovim "alpine=neovim-doc"
 }
 
 function ensure_dotfiles_are_linked () {
-	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
+    log "INFO" "Linking Neovim dotfiles to ${HOME}"
+	${LINK_FILES_BIN} "${SCRIPT_DIR}/files"
 }
 
 function ensure_plugins_are_installed () {
+    log "INFO" "Installing Neovim plugins"
 	if [ "$(current_os)" != "alpine" ]; then
 		local nvim_path="${DOTFILES_BIN_DIR}/"
 	fi
@@ -74,7 +77,9 @@ function ensure_plugins_are_installed () {
 }
 
 function ensure_aliases_are_linked () {
-    ${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/aliases" "${DOTFILES_ALIASES_DIR}"
+    log "INFO" "Linking Neovim alias files to ${DOTFILES_ETC_ZSH_ALIAS_DIR}"
+    mkdir -p "${DOTFILES_ETC_ZSH_ALIAS_DIR}"
+    ${LINK_FILES_BIN} "${SCRIPT_DIR}/alias" "${DOTFILES_ETC_ZSH_ALIAS_DIR}"
 }
 
 function resolve_download_url () {

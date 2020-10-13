@@ -45,12 +45,12 @@ function ensure_zsh_is_default_shell () {
 
 function ensure_dotfiles_are_templated () {
     log "INFO" "Templating ZSH dotfiles"
-	${BTPL_BIN} "${SCRIPT_DIR}/files"
+	${TEMPLATE_BTPL_BIN} "${SCRIPT_DIR}/files"
 }
 
 function ensure_dotfiles_are_linked () {
     log "INFO" "Linking ZSH dotfiles to ${HOME}"
-	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/files"
+	${LINK_FILES_BIN} "${SCRIPT_DIR}/files"
 }
 
 function jobs_if_possible () {

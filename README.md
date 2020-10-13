@@ -2,7 +2,6 @@
 
 ToDo:
 
-* Install man pages for all tools
 * `gpg` must be tested, git commit should be able to sign
 * mount clipboard into docker container, e.g. for `nvim` (https://stackoverflow.com/questions/41703070/docker-container-sharing-clipboard-with-host)
 

@@ -8,7 +8,7 @@ source ${ROOT_DIR}/function.log.sh
 function ensure_binfiles_are_linked () {
     log "INFO" "Linking Docker bin files to ${DOTFILES_BIN_DIR}"
     mkdir -p "${DOTFILES_BIN_DIR}"
-	${LINK_DOTFILES_BIN} "${SCRIPT_DIR}/bin" "${DOTFILES_BIN_DIR}"
+	${LINK_FILES_BIN} "${SCRIPT_DIR}/bin" "${DOTFILES_BIN_DIR}"
 }
 
 if command -v docker &> /dev/null ; then
