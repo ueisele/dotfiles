@@ -4,7 +4,6 @@ ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
 source ${ROOT_DIR}/function.os.sh
-INSTALL_PACKAGE_BIN="${ROOT_DIR}/tool.install-package.sh"
 
 function ensure_tzdata_is_installed () {
 	log "INFO" "Install timezone package tzdata"
