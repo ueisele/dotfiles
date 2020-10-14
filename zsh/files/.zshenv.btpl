@@ -36,9 +36,17 @@ export VISUAL=nvim
 # Language
 #
 
-if [[ -z "\${LANG}" ]]; then
-  export LANG='de_DE.UTF-8'
+if ( [[ -z "\${LANG}" ]] || [[ "\${LANG}" =~ "C"* ]] ) && ( locale -a | grep -q en_US.utf8 ); then
+  export LANG='en_US.utf8'
 fi
+if [[ -z "\${LC_TIME}" ]] && locale -a | grep -q "^C$"; then
+  export LC_TIME='C'
+fi
+
+#
+# Timezone
+#
+export TZ=/usr/share/zoneinfo/Europe/Berlin
 
 #
 # Paths

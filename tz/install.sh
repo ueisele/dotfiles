@@ -14,7 +14,7 @@ function ensure_timezone_is_europe_berlin () {
 	log "INFO" "Set timezone to Europe/Berlin"
 	run_with_sudo_if_required ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 	if [ "$?" -ne 0 ]; then
-		fail 1 "Could not set timezone!"
+		log "INFO" "Could not set timezone system-wide"
 	fi
 }
 
