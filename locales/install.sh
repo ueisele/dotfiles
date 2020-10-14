@@ -16,7 +16,8 @@ function ensure_locales_are_installed () {
 		"fedora=glibc-locale-source,centos(>=8)=glibc-locale-source" "fedora(>=30)=langpacks-en,centos(>=8)=langpacks-en" "fedora(>=30)=glibc-langpack-en,centos(>=8)=glibc-langpack-en"
 
 	if [ "$(current_os)" = "debian" ] || [ "$(current_os)" = "ubuntu" ]; then
-		run_with_sudo_if_required sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen
+		log "INFO" "Generating en_US.UTF-8 locale"
+		run_with_sudo_if_required "sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen"
 		run_with_sudo_if_required locale-gen
 	fi
 }
