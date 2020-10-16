@@ -147,7 +147,6 @@ set lazyredraw          	      " Wait to redraw "
 "" In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
   set mouse=a
-  set mousemodel=popup
 endif
 
 "" Set cursor modes
@@ -271,6 +270,8 @@ endif
 noremap YY "+y<CR>
 noremap <leader>p "+gP<CR>
 noremap XX "+x<CR>
+
+noremap <leader>ü "*gP<CR>
 
 "" Buffer nav
 noremap <leader>z :bp<CR>
