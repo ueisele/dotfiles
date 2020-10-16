@@ -7,7 +7,7 @@ _docker () {
   fi
   if [[ $1 == "run" ]]; then
     shift
-    command ${docker_command} run $(_env_variables) "$@"
+    command ${docker_command} run $(_env_variables) $(_x11) "$@"
   else
     command ${docker_command} "$@"
   fi
@@ -36,6 +36,12 @@ _env_variables () {
 _env_if_defined () {
   local varname=${1:?Requires variable name as first parameter!}
   [[ -n "$(eval "echo \$${varname}")" ]] && printf "--env ${varname}"
+}
+
+_x11 () {
+  if [ -e "/tmp/.X11-unix" ]; then
+    printf "-e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix"
+  fi
 }
 
 _docker "$@"

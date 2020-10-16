@@ -24,13 +24,14 @@ ensure_required_tools_are_installed () {
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
     ${INSTALL_PACKAGE_BIN} --install \
-        wget "alpine=wget-doc" less "alpine=less-doc" \
+        wget "alpine=wget-doc" less "alpine=less-doc" xclip \
         "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg" "alpine=gnupg-doc" \
         "debian=exuberant-ctags,ubuntu=exuberant-ctags,ctags" "alpine=ctags-doc"
     ${INSTALL_PACKAGE_BIN} --install "centos=epel-release" htop "alpine=htop-doc"
     ${INSTALL_PACKAGE_BIN} \
         --install-parameter "centos(>=8)=--enablerepo=epel-testing" \
         --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher" "alpine=the_silver_searcher-doc"
+    ${INSTALL_PACKAGE_BIN} --install-parameter "-X http://dl-cdn.alpinelinux.org/alpine/edge/testing" --install xsel
 }
 
 ensure_dotfile_tools_are_installed () {
