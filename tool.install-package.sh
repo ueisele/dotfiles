@@ -9,6 +9,7 @@ _CLEAN=false
 _INSTALL=false
 _PACKAGES=""
 _INSTALL_PARAMETER=""
+_DELIMITER="|"
 
 usage () {
     echo "$0: $1" >&2
@@ -61,7 +62,7 @@ parseCmd () {
                             ;;
                         *)
                             if [ -n "${_PACKAGES}" ]; then
-                                _PACKAGES="${_PACKAGES} "
+                                _PACKAGES="${_PACKAGES}${_DELIMITER}"
                             fi
                             _PACKAGES="${_PACKAGES}$1"
                             shift
@@ -78,7 +79,7 @@ parseCmd () {
                             ;;
                         *)
                             if [ -n "${_INSTALL_PARAMETER}" ]; then
-                                _INSTALL_PARAMETER="${_INSTALL_PARAMETER} "
+                                _INSTALL_PARAMETER="${_INSTALL_PARAMETER}${_DELIMITER}"
                             fi
                             _INSTALL_PARAMETER="${_INSTALL_PARAMETER}$1"
                             shift
@@ -173,18 +174,18 @@ clean () {
 }
 
 install_packages () {
-    local current_ifs=$IFS
-    IFS=' '
+    local current_ifs="$IFS"
+    IFS="${_DELIMITER}"
     for package_list in ${_PACKAGES}; do
         install_package_for_os $package_list
     done
-    IFS=${current_ifs}
+    IFS="${current_ifs}"
 }
 
 install_package_for_os () {
     local package_list="${1:?Missing package list as first parameter!}"
-    local current_ifs=$IFS
-    IFS=','
+    local current_ifs="$IFS"
+    IFS=","
     for entry in ${package_list}; do
         local package="$(get_value_of_entry "${entry}")"
         local expected_os="$(get_os_of_entry "${entry}")"
@@ -198,13 +199,13 @@ install_package_for_os () {
             break
         fi
     done
-    IFS=${current_ifs}
+    IFS="${current_ifs}"
 }
 
 resolve_install_paramerer () {
     local parameters_for_os=""
-    local current_ifs=$IFS
-    IFS=' '
+    local current_ifs="$IFS"
+    IFS="${_DELIMITER}"
     for param_list in ${_INSTALL_PARAMETER}; do
         IFS=','
         for e in ${param_list}; do
@@ -221,9 +222,9 @@ resolve_install_paramerer () {
                 parameters_for_os="${parameters_for_os}${the_entry_parameter}"
             fi
         done
-        IFS=' '
+        IFS="${_DELIMITER}"
     done
-    IFS=${current_ifs}
+    IFS="${current_ifs}"
     echo "${parameters_for_os}"
 }
 

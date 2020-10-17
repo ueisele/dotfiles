@@ -32,7 +32,7 @@ ensure_additional_tools_are_installed () {
     ${INSTALL_PACKAGE_BIN} \
         --install-parameter "centos(>=8)=--enablerepo=epel-testing" \
         --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher" "alpine=the_silver_searcher-doc"
-    ${INSTALL_PACKAGE_BIN} --install-parameter "-X http://dl-cdn.alpinelinux.org/alpine/edge/testing" --install xsel
+    ${INSTALL_PACKAGE_BIN} --install-parameter "alpine=-X http://dl-cdn.alpinelinux.org/alpine/edge/testing" --install xsel
 }
 
 ensure_dotfile_tools_are_installed () {
