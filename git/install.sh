@@ -51,11 +51,11 @@ function ensure_git_is_configured () {
         git config --global difftool.bc3.trustExitCode true
         git config --global diff.tool bc3
     elif command -v code > /dev/null; then
-        git config --global mergetool.vscode.cmd "code --wait $MERGED"
+        git config --global mergetool.vscode.cmd "code --wait \"\$MERGED\""
         git config --global mergetool.vscode.trustExitCode false
         git config --global merge.tool vscode
 
-        git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+        git config --global difftool.vscode.cmd "code --wait --diff \"\$LOCAL\" \"\$REMOTE\""
         git config --global difftool.vscode.trustExitCode false
         git config --global diff.tool vscode
     elif command -v nvim > /dev/null; then 
