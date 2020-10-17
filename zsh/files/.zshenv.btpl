@@ -6,9 +6,9 @@
 # Dotfiles Variables
 #
 
-export DOTFILES_DIR=${DOTFILES_DIR}
+export DOTFILES_DIR="${DOTFILES_DIR}"
 export DOTFILES_STORE_DIR="${DOTFILES_STORE_DIR}"
-export DOTFILES_BIN_DIR=${DOTFILES_BIN_DIR}
+export DOTFILES_BIN_DIR="${DOTFILES_BIN_DIR}"
 export DOTFILES_ETC_DIR="${DOTFILES_ETC_DIR}"
 export DOTFILES_ETC_ZSH_DIR="${DOTFILES_ETC_ZSH_DIR}"
 export DOTFILES_ETC_ZSH_COMPLETION_DIR="${DOTFILES_ETC_ZSH_COMPLETION_DIR}"
@@ -36,10 +36,10 @@ export VISUAL=nvim
 # Language
 #
 
-if ( [[ -z "\${LANG}" ]] || [[ "\${LANG}" =~ "C"* ]] ) && ( locale -a | grep -q en_US.utf8 ); then
+if ( [[ -z "\${LANG}" ]] || [[ "\${LANG}" =~ "C"* ]] ) && ( command -v locale > /dev/null ) && ( locale -a | grep -q en_US.utf8 ); then
   export LANG='en_US.utf8'
 fi
-if [[ -z "\${LC_TIME}" ]] && locale -a | grep -q "^C$"; then
+if [[ -z "\${LC_TIME}" ]] && command -v locale > /dev/null && locale -a | grep -q "^C$"; then
   export LC_TIME='C'
 fi
 

@@ -24,7 +24,7 @@ ensure_required_tools_are_installed () {
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
     ${INSTALL_PACKAGE_BIN} --install \
-        wget "alpine=wget-doc" less "alpine=less-doc" xclip "alpine=xclip-doc" \
+        wget "alpine=wget-doc" less "alpine=less-doc" \
         "debian=ldnsutils,ubuntu=ldnsutils,fedora=ldns-utils,centos=ldns,arch=ldns,manjaro=ldns,alpine=drill" "alpine=ldns-doc" \
         "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg" "alpine=gnupg-doc" \
         "debian=exuberant-ctags,ubuntu=exuberant-ctags,ctags" "alpine=ctags-doc"
