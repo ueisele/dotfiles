@@ -24,7 +24,7 @@ ensure_required_tools_are_installed () {
 ensure_additional_tools_are_installed () {
     log "INFO" "Installing optional tools with package manager"
     ${INSTALL_PACKAGE_BIN} --install \
-        wget "alpine=wget-doc" less "alpine=less-doc" xclip \
+        wget "alpine=wget-doc" less "alpine=less-doc" xclip "alpine=xclip-doc" \
         "debian=ldnsutils,ubuntu=ldnsutils,fedora=ldns-utils,centos=ldns,arch=ldns,manjaro=ldns,alpine=drill" "alpine=ldns-doc" \
         "ubuntu=gpg,fedora=gnupg2,centos=gnupg2,gnupg" "alpine=gnupg-doc" \
         "debian=exuberant-ctags,ubuntu=exuberant-ctags,ctags" "alpine=ctags-doc"
@@ -32,7 +32,7 @@ ensure_additional_tools_are_installed () {
     ${INSTALL_PACKAGE_BIN} \
         --install-parameter "centos(>=8)=--enablerepo=epel-testing" \
         --install "debian=silversearcher-ag,ubuntu=silversearcher-ag,the_silver_searcher" "alpine=the_silver_searcher-doc"
-    ${INSTALL_PACKAGE_BIN} --install-parameter "alpine=-X http://dl-cdn.alpinelinux.org/alpine/edge/testing" --install xsel
+    ${INSTALL_PACKAGE_BIN} --install-parameter "alpine=-X http://dl-cdn.alpinelinux.org/alpine/edge/testing" --install xsel "alpine=xsel-doc"
 }
 
 ensure_dotfile_tools_are_installed () {
