@@ -39,7 +39,7 @@ _env_if_defined () {
 }
 
 _x11 () {
-  if [ -e "/tmp/.X11-unix" ]; then
+  if [ -e "/tmp/.X11-unix" ] && [ -n "${DISPLAY}" ]; then
     printf "-e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix"
   fi
 }
