@@ -6,15 +6,6 @@ source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
 source ${ROOT_DIR}/function.os.sh
 
-function ensure_zsh_requirements_are_installed () {
-    log "INFO" "Installing chsh tool for changing user shell"
-    ${INSTALL_PACKAGE_BIN} --install "fedora(>=24)=util-linux-user,centos(>=8)=util-linux-user,alpine=shadow" "alpine=shadow-doc"
-    if [ "$(current_os)" = "alpine" ] && [ ! -e /etc/pam.d/chsh ]; then
-        log "INFO" "Allow passwordless change of user shell, by creating corresponding /etc/pam.d/chsh"
-        printf "#%%PAM-1.0\\nauth       sufficient   pam_shells.so" | run_with_sudo_if_required tee -a /etc/pam.d/chsh
-    fi
-}
-
 function ensure_zsh_is_installed () {
     log "INFO" "Installing ZSH shell"
     ${INSTALL_PACKAGE_BIN} --install \
@@ -31,15 +22,6 @@ function ensure_prezto_installed () {
     else
         log "INFO" "Updating Prezto GitHub Repository in ${HOME}/.zprezto"
         (cd "${HOME}/.zprezto" && git pull && git submodule update --init --recursive)
-    fi
-}
-
-function ensure_zsh_is_default_shell () {
-    local current_shell="$(grep "^$(id -un)" /etc/passwd | cut -d":" -f7)"
-    local expeced_shell="$(command -v zsh)"
-    if [ "${current_shell}" != "${expeced_shell}" ]; then
-        log "INFO" "Change login shell of $(id -un) from ${current_shell} to ${expeced_shell}"
-        chsh -s "${expeced_shell}"
     fi
 }
 
@@ -66,9 +48,7 @@ function jobs_if_possible () {
     fi
 }
 
-ensure_zsh_requirements_are_installed
 ensure_zsh_is_installed
 ensure_prezto_installed
-ensure_zsh_is_default_shell
 ensure_dotfiles_are_templated
 ensure_dotfiles_are_linked
