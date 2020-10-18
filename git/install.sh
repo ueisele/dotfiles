@@ -4,6 +4,7 @@ SCRIPT_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
+source ${ROOT_DIR}/function.vscode.sh
 
 function userSigningKey () {
     gpg --with-colons -k "$(git config user.email)" 2>/dev/null | grep ":s:" | cut -d':' -f5
@@ -50,7 +51,7 @@ function ensure_git_is_configured () {
 
         git config --global difftool.bc3.trustExitCode true
         git config --global diff.tool bc3
-    elif command -v code > /dev/null; then
+    elif command -v code > /dev/null || command -v code-insiders > /dev/null || is_devcontainer; then
         git config --global mergetool.vscode.cmd "code --wait \"\$MERGED\""
         git config --global mergetool.vscode.trustExitCode false
         git config --global merge.tool vscode
@@ -58,20 +59,12 @@ function ensure_git_is_configured () {
         git config --global difftool.vscode.cmd "code --wait --diff \"\$LOCAL\" \"\$REMOTE\""
         git config --global difftool.vscode.trustExitCode false
         git config --global diff.tool vscode
-    elif command -v nvim > /dev/null; then 
+    else
         git config --global mergetool.vimdiff3.path nvim
         git config --global merge.tool vimdiff3
 
         git config --global difftool.vimdiff3.path nvim
         git config --global diff.tool vimdiff3
-    elif command -v vim > /dev/null; then 
-        git config --global merge.tool vimdiff3
-
-        git config --global diff.tool vimdiff3
-    else
-        git config --global --unset merge.tool || true
-
-        git config --global --unset diff.tool || true
     fi
 
     log "INFO" "Successfully configured Git"
