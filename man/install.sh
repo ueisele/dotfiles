@@ -13,7 +13,7 @@ function ensure_man_is_installed () {
 
 function ensure_man_pages_are_installed () {
 	if [ "$(current_os)" = "ubuntu" ]; then
-		if command -v unminimize &> /dev/null; then
+		if command -v unminimize > /dev/null 2>&1; then
 			log "INFO" "Unminimizing system and installing man pages"
 			echo -e "y\\ny\\n" | run_with_sudo_if_required unminimize
 		fi

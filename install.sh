@@ -47,8 +47,15 @@ ensure_package_database_is_cleaned () {
     ${INSTALL_PACKAGE_BIN} --clean
 }
 
-ensure_package_database_is_updated
-ensure_required_tools_are_installed
-ensure_additional_tools_are_installed
-ensure_dotfile_tools_are_installed
-ensure_package_database_is_cleaned
+ensure_installed () {
+    local start_seconds=$(date +%s)
+    ensure_package_database_is_updated
+    ensure_required_tools_are_installed
+    ensure_additional_tools_are_installed
+    ensure_dotfile_tools_are_installed
+    ensure_package_database_is_cleaned
+    local duration_seconds=$(( $(date +%s) - ${start_seconds} ))
+    log "INFO" "Installation took ${duration_seconds} seconds."
+}
+
+ensure_installed

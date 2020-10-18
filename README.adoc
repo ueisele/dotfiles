@@ -1,0 +1,36 @@
+= Dotfiles with additional installations for VSCode Dev Containers
+
+Supported operating systems:
+
+* Debian >= 9
+* Ubuntu >= 18.04
+* Fedora >= 26
+* Centos >= 7
+* Archlinux
+* Manjaro
+* Alpine
+
+== Quickstart
+
+Clone this repository to any folder, e.g. `~/.dotfiles` and run `install.sh` script.
+
+== Docker container preparation
+
+The following steps should be handled in the Dockerfile and not by this scripts:
+
+=== Timezone
+
+Install `tzdata` on Docker image and run the following command:
+
+----
+ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+----
+
+== Additional Content
+
+=== Online IDEs
+
+* https://visualstudio.microsoft.com/de/services/visual-studio-codespaces/
+* https://www.gitpod.io
+* https://aws.amazon.com/de/cloud9/
+* https://codeanywhere.com
