@@ -11,6 +11,7 @@ ensure_package_database_is_updated () {
 
 ensure_required_tools_are_installed () {
     log "INFO" "Installing required tools with package manager"
+    ${INSTALL_PACKAGE_BIN} --install "debian=apt-utils,ubuntu=apt-utils"
     ${INSTALL_PACKAGE_BIN} --install \
         "centos(==6)=http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm" \
         "centos(==7)=https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.8-1.x86_64.rpm" \

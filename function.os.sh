@@ -15,7 +15,7 @@ run_with_sudo_if_required () {
             _log "WARN" "Could not execute command, because sudo access is not allowed: $(echo "$@")"
             return 1
         else
-            eval "sudo $@"
+            eval "sudo -E -n -P $@"
         fi
     else
         eval "$@"
