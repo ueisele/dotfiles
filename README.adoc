@@ -34,3 +34,16 @@ ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 * https://www.gitpod.io
 * https://aws.amazon.com/de/cloud9/
 * https://codeanywhere.com
+
+=== Containers
+
+Access Docker container filesystem:
+
+----
+ls -alh /proc/$(docker inspect --format {{.State.Pid}} $CONTAINER_ID)/root
+----
+https://bindfs.org/
+
+Persistant volume plugin:
+
+* https://github.com/MatchbookLab/local-persist
