@@ -20,3 +20,6 @@ out/
 ## Visual Studio Code ##
 .settings/
 *.code-workspace
+
+## Shell ##
+.envrc
