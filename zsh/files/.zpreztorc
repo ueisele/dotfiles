@@ -38,8 +38,9 @@ zstyle ':prezto:load' pmodule \
   'history-substring-search' \
   'syntax-highlighting' \
   'autosuggestions' \
-  'prompt' \
+  'direnv' \
   'dotfiles' \
+  'prompt' \
   'completion'
 #
 # Autosuggestions
