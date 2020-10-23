@@ -40,6 +40,7 @@ zstyle ':prezto:load' pmodule \
   'autosuggestions' \
   'direnv' \
   'dotfiles' \
+  'asdf' \
   'prompt' \
   'completion'
 #

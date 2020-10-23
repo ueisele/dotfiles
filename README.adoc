@@ -44,6 +44,8 @@ ls -alh /proc/$(docker inspect --format {{.State.Pid}} $CONTAINER_ID)/root
 ----
 https://bindfs.org/
 
-Persistant volume plugin:
+Persistant volume plugin: https://github.com/MatchbookLab/local-persist
 
-* https://github.com/MatchbookLab/local-persist
+----
+docker volume create -d local-persist -o mountpoint=/data/images --name=images
+----
