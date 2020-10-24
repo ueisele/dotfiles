@@ -4,6 +4,7 @@ SCRIPT_DIR="$(readlink -f $(dirname ${BASH_SOURCE[0]}))"
 ROOT_DIR="$(readlink -f ${SCRIPT_DIR}/..)"
 source ${ROOT_DIR}/env.sh
 source ${ROOT_DIR}/function.log.sh
+source ${ROOT_DIR}/function.os.sh
 
 GITHUB_REPO="direnv/direnv"
 
@@ -44,6 +45,15 @@ function ensure_downloaded_and_installed_from_github () {
     mkdir -p "${DOTFILES_BIN_DIR}"
 	ln -srf "${DOTFILES_APP_DIR}/${name_full}/${name_short}" "${DOTFILES_BIN_DIR}/${name_short}"
     log "INFO" "Linked binary from ${DOTFILES_APP_DIR}/${name_full}/${name_short} to ${DOTFILES_BIN_DIR}/${name_short}"
+
+    if [ -d "/usr/local/bin" ]; then
+      	run_with_sudo_if_required "\cp -f \"${DOTFILES_APP_DIR}/${name_full}/${name_short}\" \"/usr/local/bin/${name_short}\""
+        if [ "$?" -ne 0 ]; then
+		    log "WARN" "Could not copy binary from ${DOTFILES_APP_DIR}/${name_full}/${name_short} to /usr/local/bin/${name_short}"
+	    else
+            log "INFO" "Copied binary from ${DOTFILES_APP_DIR}/${name_full}/${name_short} to /usr/local/bin/${name_short}"
+        fi
+    fi
 
     mkdir -p "${DOTFILES_MAN_DIR}/man1"
     ln -srf "${DOTFILES_APP_DIR}/${name_full}/man/${name_short}.1" "${DOTFILES_MAN_DIR}/man1/${name_short}.1"
