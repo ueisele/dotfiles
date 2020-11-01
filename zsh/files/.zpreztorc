@@ -39,6 +39,8 @@ zstyle ':prezto:load' pmodule \
   'syntax-highlighting' \
   'autosuggestions' \
   'direnv' \
+  'node' \
+  'ocaml' \
   'dotfiles' \
   'asdf' \
   'prompt' \
