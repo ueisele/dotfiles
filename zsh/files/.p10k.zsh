@@ -55,9 +55,9 @@
     # anaconda              # conda environment (https://conda.io/)
     # pyenv                 # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
-    nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
-    nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
-    nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
+    #nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
+    #nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
+    #nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
     # node_version          # node.js version
     # go_version            # go version (https://golang.org)
     # rust_version          # rustc version (https://www.rust-lang.org)
@@ -1202,10 +1202,20 @@
   #   typeset -g POWERLEVEL9K_KUBECONTEXT_TEST_VISUAL_IDENTIFIER_EXPANSION='⭐'
   #   typeset -g POWERLEVEL9K_KUBECONTEXT_TEST_CONTENT_EXPANSION='> ${P9K_CONTENT} <'
   typeset -g POWERLEVEL9K_KUBECONTEXT_CLASSES=(
-      # '*prod*'  PROD    # These values are examples that are unlikely
-      # '*test*'  TEST    # to match your needs. Customize them as needed.
+      '*prod*'  PROD    # These values are examples that are unlikely
+      '*(test|int)*'  TEST    # to match your needs. Customize them as needed.
       '*'       DEFAULT)
-  typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_FOREGROUND=134
+
+  typeset -g POWERLEVEL9K_KUBECONTEXT_PROD_FOREGROUND=255
+  typeset -g POWERLEVEL9K_KUBECONTEXT_PROD_BACKGROUND=160
+  typeset -g POWERLEVEL9K_KUBECONTEXT_PROD_PREFIX='%255Fat '
+  typeset -g POWERLEVEL9K_KUBECONTEXT_PROD_CONTENT_EXPANSION='%B> ${P9K_CONTENT} <'
+  typeset -g POWERLEVEL9K_KUBECONTEXT_PROD_VISUAL_IDENTIFIER_EXPANSION='%B!'
+
+  typeset -g POWERLEVEL9K_KUBECONTEXT_TEST_FOREGROUND=160
+
+  typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_FOREGROUND=255
+  # typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_FOREGROUND=134
   # typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   # Use POWERLEVEL9K_KUBECONTEXT_CONTENT_EXPANSION to specify the content displayed by kubecontext
