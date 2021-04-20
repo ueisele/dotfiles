@@ -11,7 +11,7 @@ function ensure_asdf_is_installed () {
         git clone https://github.com/asdf-vm/asdf.git "${HOME}/.asdf"
     else
         log "INFO" "Updating asdf GitHub Repository in ${HOME}/.asdf"
-        (cd "${HOME}/.zprezto" && git pull)
+        (cd "${HOME}/.asdf" && bin/asdf update)
     fi
     (cd "${HOME}/.asdf" && git checkout "$(git describe --abbrev=0 --tags)")
 

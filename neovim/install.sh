@@ -41,7 +41,7 @@ function ensure_downloaded_and_installed_from_github () {
 		chown -R $(id -u):$(id -g) "${tmpdir}"
 		chmod -R a+rX "${tmpdir}"
         mkdir -p "${DOTFILES_APP_DIR}/${name_full}"
-		mv -f "${tmpdir}/squashfs-root" "${DOTFILES_APP_DIR}/${name_full}"
+		cp -R "${tmpdir}/squashfs-root/"* "${DOTFILES_APP_DIR}/${name_full}/"
 		rm -r "${tmpdir}"
         log "INFO" "Artifact has been downloaded to ${DOTFILES_APP_DIR}/${name_full}"
 
