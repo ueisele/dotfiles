@@ -35,6 +35,7 @@ zstyle ':prezto:load' pmodule \
   'directory' \
   'spectrum' \
   'utility' \
+  'completion' \
   'history-substring-search' \
   'syntax-highlighting' \
   'autosuggestions' \
@@ -43,8 +44,7 @@ zstyle ':prezto:load' pmodule \
   'ocaml' \
   'dotfiles' \
   'asdf' \
-  'prompt' \
-  'completion'
+  'prompt'
 #
 # Autosuggestions
 #
