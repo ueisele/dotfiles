@@ -10,6 +10,10 @@ Supported operating systems:
 * Manjaro
 * Alpine
 
+ToDo:
+
+* Fedora Silverblue
+
 == Quickstart
 
 Clone this repository to any folder, e.g. `~/.dotfiles` and run `install.sh` script.
